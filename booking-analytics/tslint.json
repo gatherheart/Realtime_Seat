@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-standard",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
+  "jsRules": {},
+  "rules": {
+    "object-literal-sort-keys": false,
+    "no-console": false,
+    "no-shadowed-variable": false,
+    "member-ordering": false,
+    "jsx-key": false,
+    "interface-name": false,
+    "no-var-requires": false,
+    "jsx-no-lambda": false
+  },
+  "linterOptions": {
+    "exclude": ["node_modules"]
+  }
+}
