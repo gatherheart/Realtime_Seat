@@ -1,0 +1,17 @@
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.foldingStrategy": "indentation",
+  "prettier.semi": false,
+  "prettier.trailingComma": "all",
+  "prettier.singleQuote": true,
+  "prettier.tslintIntegration": true,
+  "prettier.tabWidth": 2,
+  "prettier.printWidth": 120
+}

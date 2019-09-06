@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noErrorTruncation": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types"],
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.tsx", "__tests__"]
+}
