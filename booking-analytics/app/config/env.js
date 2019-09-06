@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 const config = {
   web: {
-    port: process.env.NODE_PORT || 8000
-  }
-};
+    port: process.env.NODE_PORT || 8000,
+  },
+}
 
-module.exports = config;
+module.exports = config

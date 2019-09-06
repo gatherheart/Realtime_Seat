@@ -1,52 +1,40 @@
-import React from 'react';
-import Users from './states/Users';
-import { IContextStateConstructable, IDispatch } from './types';
+import React from 'react'
+import { IContextStateConstructable, IDispatch } from './types'
 
-export const AppContext = React.createContext({});
+export const AppContext = React.createContext({})
 
 export class AppMainContextProvider extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       currentPageTitle: 'Welcome',
       setPageTitle: this.setPageTitle.bind(this),
-      ...this.connect([Users])
-    };
+    }
   }
 
   public setPageTitle(title: string) {
-    this.setState({ currentPageTitle: title });
+    this.setState({ currentPageTitle: title })
   }
 
   public connect(statesClassList: IContextStateConstructable[]) {
-    const data: any = {};
+    const data: any = {}
     statesClassList.map((StateClass: IContextStateConstructable) => {
-      const stateInstance = new StateClass();
-      data[StateClass.rootName] = stateInstance.getInitialState(
-        this.dispatch.bind(this)
-      );
-    });
+      const stateInstance = new StateClass()
+      data[StateClass.rootName] = stateInstance.getInitialState(this.dispatch.bind(this))
+    })
 
-    return data;
+    return data
   }
 
   public async dispatch(actionData: IDispatch) {
-    const data = {};
-    data[actionData.rootStateName] = Object.assign(
-      {},
-      this.state[actionData.rootStateName],
-      actionData.payload
-    );
-    await this.setState(data);
+    const data = {}
+    data[actionData.rootStateName] = Object.assign({}, this.state[actionData.rootStateName], actionData.payload)
+    await this.setState(data)
   }
 
   public render() {
-    const {
-      state,
-      props: { children }
-    } = this;
-    return <AppContext.Provider value={state}>{children}</AppContext.Provider>;
+    return <AppContext.Provider value={this.state}>{this.props.children}</AppContext.Provider>
   }
 }
 
-export const AppMainContextConsumer = AppContext.Consumer;
+export const AppMainContextConsumer = AppContext.Consumer

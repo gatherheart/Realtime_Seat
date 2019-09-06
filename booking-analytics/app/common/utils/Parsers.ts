@@ -1,51 +1,51 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
 export const parseFetchQueryObj = (query?) => {
-  console.log('parse ', query);
-  if (!query || _.isEmpty(query)) return '';
+  console.log('parse ', query)
+  if (!query || _.isEmpty(query)) return ''
 
-  const queries = [];
+  const queries = []
 
-  const { where, limit, offset } = query;
+  const { where, limit, offset } = query
 
   Object.keys(where).forEach(key => {
-    queries.push(`where[${key}]=${where[key]}`);
-  });
-  limit && queries.push(`limit=${limit}`);
-  offset && queries.push(`offset=${offset}`);
+    queries.push(`where[${key}]=${where[key]}`)
+  })
+  limit && queries.push(`limit=${limit}`)
+  offset && queries.push(`offset=${offset}`)
 
-  return queries.join('&');
-};
+  return queries.join('&')
+}
 
 export const parseQuery = (query: string): any => {
-  const onlyQueries = query.slice(1, query.length);
+  const onlyQueries = query.slice(1, query.length)
 
-  const pairStrs = onlyQueries.split('&');
+  const pairStrs = onlyQueries.split('&')
 
-  const queryObj = {};
+  const queryObj = {}
 
   pairStrs.forEach(str => {
-    const [key, value] = str.split('=');
-    queryObj[key] = value;
-  });
+    const [key, value] = str.split('=')
+    queryObj[key] = value
+  })
 
-  return queryObj;
-};
+  return queryObj
+}
 
 export const numWithCommas = (num: number) => {
-  const aboveDecimal = Math.floor(num);
-  const belowDecimal = floorTwoDecimal(num - aboveDecimal);
+  const aboveDecimal = Math.floor(num)
+  const belowDecimal = floorTwoDecimal(num - aboveDecimal)
 
-  let result = aboveDecimal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  let result = aboveDecimal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
   if (belowDecimal) {
-    const belowDecimalStr = belowDecimal.toString();
-    result += belowDecimalStr.slice(1, belowDecimalStr.length);
+    const belowDecimalStr = belowDecimal.toString()
+    result += belowDecimalStr.slice(1, belowDecimalStr.length)
   }
 
-  return result;
-};
+  return result
+}
 
 export const floorTwoDecimal = (num: number) => {
-  return Math.floor(num * 100) / 100;
-};
+  return Math.floor(num * 100) / 100
+}

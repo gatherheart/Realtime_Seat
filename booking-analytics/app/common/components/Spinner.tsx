@@ -1,5 +1,5 @@
-import React from 'react';
-import './Spinner.scss';
+import React from 'react'
+import './Spinner.scss'
 
 export class Spinner extends React.PureComponent {
   public render() {
@@ -14,6 +14,6 @@ export class Spinner extends React.PureComponent {
         <div />
         <div />
       </div>
-    );
+    )
   }
 }
