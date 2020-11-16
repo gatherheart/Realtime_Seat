@@ -32,10 +32,5 @@
     "@typescript-eslint/no-shadow": "warn", // 상위 스코프에 동일 변수명이 있을경우 경고
     "@typescript-eslint/no-unused-vars": "warn" // 미사용 변수 경고
   },
-  "ignorePatterns": ["dist/", "node_modules/"],
-  "settings": {
-    "import/resolver": {
-      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
-    }
-  }
+  "ignorePatterns": ["dist/", "node_modules/"]
 }
