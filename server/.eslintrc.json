@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/semi": "off", // 세미콜론 확인 X
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE", "PascalCase"], // 변수명에 적용할 rule
+        "leadingUnderscore": "allow" // underscore(_) 로 시작하는 변수명 허용
+      }
+    ],
+    "@typescript-eslint/no-use-before-define": "warn", // 선언전에 사용시 경고
+    "@typescript-eslint/no-shadow": "warn", // 상위 스코프에 동일 변수명이 있을경우 경고
+    "@typescript-eslint/no-unused-vars": "warn" // 미사용 변수 경고
+  },
+  "ignorePatterns": ["dist/", "node_modules/"]
+}
