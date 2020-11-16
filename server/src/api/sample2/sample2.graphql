@@ -1,0 +1,19 @@
+type Sample2Response {
+  user: User
+  errorMessage: String
+  error: Boolean!
+}
+
+type User {
+  uid: String!
+  userName: String!
+  email: String!
+}
+
+type Query {
+  sample2(uid: String!): Sample2Response!
+}
+
+type Mutation {
+  sample2(uid: String!, userName: String!, email: String!): Sample2Response!
+}
