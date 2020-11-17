@@ -1,0 +1,35 @@
+type SampleResponse {
+  text: String!
+  error: Boolean!
+}
+
+type SampleMessage {
+  channel: String!
+  text: String!
+}
+
+type Query {
+  sample1(name: String!): SampleResponse!
+  sample2(uid: String!): Sample2Response!
+}
+
+type Mutation {
+  sample1(channel: String!, text: String!): SampleMessage!
+  sample2(uid: String!, userName: String!, email: String!): Sample2Response!
+}
+
+type Subscription {
+  sample1(channel: String!): SampleMessage!
+}
+
+type Sample2Response {
+  user: User
+  errorMessage: String
+  error: Boolean!
+}
+
+type User {
+  uid: String!
+  userName: String!
+  email: String!
+}
