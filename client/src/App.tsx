@@ -1,8 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
-import Performance from './pages/Performance'
-import BookingSchedule from './pages/BookingSchedule'
+import Home from './pages/Home'
+import Booking from './pages/Booking'
 import BookingSeat from './pages/BookingSeat'
 import Payment from './pages/Payment'
 
@@ -12,9 +12,9 @@ function App(): JSX.Element {
   return (
     <BrowserRouter>
       <div className="App">
-        <Route exact path="/" component={Performance} />
+        <Route exact path="/" component={Home} />
         <Switch>
-          <Route path="/booking-schedule" component={BookingSchedule} />
+          <Route path="/booking" component={Booking} />
           <Route path="/booking-seat" component={BookingSeat} />
           <Route path="/payment" component={Payment} />
         </Switch>
