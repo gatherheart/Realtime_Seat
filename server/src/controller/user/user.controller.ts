@@ -2,7 +2,7 @@ import User, { IUser } from '../../db/user/user.model'
 import { CreateQuery } from 'mongoose'
 import { redis } from '../../db/database'
 
-async function createUser({ uid, email, userName }: CreateQuery<IUser>): Promise<IUser> {
+function createUser({ uid, email, userName }: CreateQuery<IUser>): Promise<IUser> {
   return User.create({
     uid,
     email,
