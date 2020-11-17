@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 
 import Cart from '../components/bookingSeat/Cart'
 import Seat from '../components/bookingSeat/Seat'
-import SeatInfo from '../components/bookingSeat/SeatInfo'
+import SeatDetails from '../components/bookingSeat/SeatDetails'
 import SeatMap from '../components/bookingSeat/SeatMap'
 
 export default function BookingSeat(): JSX.Element {
@@ -12,7 +12,7 @@ export default function BookingSeat(): JSX.Element {
     <div>
       <SeatMap />
       <Seat />
-      <SeatInfo />
+      <SeatDetails />
       <Cart />
       <div onClick={() => history.push('payment')}>next</div>
     </div>

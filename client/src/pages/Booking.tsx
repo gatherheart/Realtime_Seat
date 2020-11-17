@@ -3,7 +3,7 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
 import Performance from '../components/performance/Performance'
 import BookingSchedule from '../components/bookingSchedule/BookingSchedule'
-import PerformanceInfo from '../components/performanceInfo/PerformanceInfo'
+import PerformanceDetails from '../components/performanceDetails/PerformanceDetails'
 
 export default function Booking(): JSX.Element {
   const match = useRouteMatch()
@@ -13,7 +13,7 @@ export default function Booking(): JSX.Element {
         <Route exact path={match.path} component={Performance} />
         <Route path={`${match.path}/:bookingId`} component={BookingSchedule} />
       </Switch>
-      <PerformanceInfo />
+      <PerformanceDetails />
     </div>
   )
 }
