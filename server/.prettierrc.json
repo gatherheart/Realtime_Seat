@@ -1,0 +1,9 @@
+{
+  "formatOnSave": true,
+  "semi": false,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "tslintIntegration": true,
+  "tabWidth": 2,
+  "printWidth": 120
+}

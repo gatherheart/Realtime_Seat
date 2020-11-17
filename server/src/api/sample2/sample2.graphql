@@ -1,0 +1,44 @@
+type Sample2Response {
+  slot: Slot
+  errorMessage: String
+  error: Boolean!
+}
+
+type User {
+  uid: String!
+  userName: String!
+  email: String!
+}
+
+type Slot {
+  slotId: String!
+  position: Position!
+  state: SlotState
+  typeName: String!
+}
+
+type Position {
+  x: Float
+  y: Float
+  angle: Float
+}
+
+input PositionArgs {
+  x: Float
+  y: Float
+  angle: Float
+}
+
+enum SlotState {
+  FREE
+  OCCUPIED
+  SOLD
+}
+
+type Query {
+  sample2(slotId: String!): Sample2Response!
+}
+
+type Mutation {
+  sample2(slotId: String!, position: PositionArgs!, typeName: String!): Sample2Response!
+}
