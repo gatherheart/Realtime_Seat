@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Booking(): JSX.Element {
+export default function Booking() {
   const match = useRouteMatch()
   const classes = useStyles()
 

@@ -1,7 +1,8 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import bookingNaver from '../../assets/booking-naver.png'
+import { State } from '../../reducer'
 
 const useStyle = makeStyles({
   poster: {},
@@ -11,13 +12,13 @@ const useStyle = makeStyles({
   },
 })
 
-export default function Poster(): JSX.Element {
+export default function Poster() {
   const classes = useStyle()
-  const defaultImg = bookingNaver
+  const img = useSelector((state: State) => state.data.thumbnail)
 
   return (
     <div className={classes.poster}>
-      <img src={defaultImg} className={classes.img} />
+      <img src={img} className={classes.img} />
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { Grid, Button } from '@material-ui/core'
 import Poster from './Poster'
 import Content from './Content'
 
-export default function Performance(): JSX.Element {
+export default function Performance() {
   const history = useHistory()
   const match = useRouteMatch()
 

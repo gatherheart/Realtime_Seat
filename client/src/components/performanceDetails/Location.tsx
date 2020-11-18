@@ -1,12 +1,8 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { State } from '../../reducer'
 
-export default function Location(): JSX.Element {
-  const history = useHistory()
-  return (
-    <div>
-      Location
-      <div onClick={() => history.push('/')}>switch</div>
-    </div>
-  )
+export default function Location() {
+  const { location } = useSelector((state: State) => state.data)
+  return <>{location}</>
 }
