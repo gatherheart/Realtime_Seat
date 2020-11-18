@@ -1,26 +1,7 @@
-type Sample2Response {
-  slot: Slot
-  errorMessage: String
-  error: Boolean!
-}
-
-type Slot {
-  slotId: String!
-  view: String!
-  state: SlotState
-  typeName: String!
-}
-
-enum SlotState {
-  FREE
-  OCCUPIED
-  SOLD
-}
-
 type Query {
-  sample2(slotId: String!): Sample2Response!
+  sample2(slotId: String!): Slot!
 }
 
 type Mutation {
-  sample2(slotId: String!, view: String!, typeName: String!): Sample2Response!
+  sample2(slotId: String!, view: String!, typeName: String!): Slot!
 }

@@ -1,16 +1,16 @@
 import Slot from '../../db/slot/slot.model'
 import { CreateQuery } from 'mongoose'
 import { redis } from '../../db/database'
-import { SlotState, ISlot } from '../../interface/slot/slot.interface'
+import { SlotStatus, ISlot } from '../../interface/slot/slot.interface'
 import slotMapModel from '../../db/slotMap/slotMap.model'
 import { ISlotMap } from '../../interface/slotMapId/slotMap.interface'
-import { SLOT_HASH_MAP_KEY } from '../../util/hashMapKey'
+import { SLOT_HASH_MAP_KEY } from '../../constant/hashMapKey'
 
 function createSlot({ slotId, view, typeName }: CreateQuery<ISlot>): Promise<ISlot> {
   return Slot.create({
     slotId,
     view,
-    state: SlotState.FREE,
+    status: SlotStatus.FREE,
     typeName,
   })
     .then((data: ISlot) => {

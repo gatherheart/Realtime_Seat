@@ -1,4 +1,4 @@
-export enum SlotState {
+export enum SlotStatus {
   FREE = 'FREE',
   OCCUPIED = 'OCCUPIED',
   SOLD = 'SOLD',
@@ -7,6 +7,6 @@ export enum SlotState {
 export interface ISlot {
   slotId: string
   view: string
-  state?: SlotState
+  status: SlotStatus
   typeName: string
 }
