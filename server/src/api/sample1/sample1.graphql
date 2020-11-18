@@ -1,15 +1,10 @@
-type SampleResponse {
-  text: String!
-  error: Boolean!
-}
-
 type SampleMessage {
   channel: String!
   text: String!
 }
 
 type Query {
-  sample1(name: String!): SampleResponse!
+  sample1(name: String!): String!
 }
 
 type Mutation {

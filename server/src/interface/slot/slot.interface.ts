@@ -1,11 +1,12 @@
-export type Position = {
-  x?: number
-  y?: number
-  angle?: number
-}
-
-export enum SlotState {
+export enum SlotStatus {
   FREE = 'FREE',
   OCCUPIED = 'OCCUPIED',
   SOLD = 'SOLD',
+}
+
+export interface ISlot {
+  slotId: string
+  view: string
+  status: SlotStatus
+  typeName: string
 }

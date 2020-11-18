@@ -1,24 +1,14 @@
 import { IContext } from '../../interface/graphql.interface'
-import {
-  QuerySample1Args,
-  MutationSample1Args,
-  SubscriptionSample1Args,
-  SampleResponse,
-  SampleMessage,
-} from '../../types'
 
 const resolvers = {
   Query: {
-    sample1: (_: unknown, args: QuerySample1Args): SampleResponse => {
-      return {
-        text: `Hello ${args.name}`,
-        error: false,
-      }
+    sample1: (_: unknown, args) => {
+      return `Hello ${args.name}`
     },
   },
 
   Mutation: {
-    sample1: (_: unknown, { channel, text }: MutationSample1Args, { pubsub }: IContext): SampleMessage => {
+    sample1: (_: unknown, { channel, text }, { pubsub }: IContext) => {
       const message = { channel, text }
       pubsub.publish(channel, { sample1: message })
       return message
@@ -27,11 +17,7 @@ const resolvers = {
 
   Subscription: {
     sample1: {
-      subscribe: (
-        _: unknown,
-        { channel }: SubscriptionSample1Args,
-        { pubsub }: IContext,
-      ): AsyncIterator<SampleMessage> => {
+      subscribe: (_: unknown, { channel }, { pubsub }: IContext) => {
         return pubsub.asyncIterator(channel)
       },
     },

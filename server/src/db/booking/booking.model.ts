@@ -1,16 +1,7 @@
 import * as mongoose from 'mongoose'
+import { IBooking } from '../../interface/booking/booking.interface'
 
-interface BookingDetail {
-  bizItemId: string
-  slotId: string
-  slotMapId: string
-}
-
-export interface IBooking extends mongoose.Document {
-  bookingId: string
-  booking: [BookingDetail]
-  createdAt: Date
-}
+export interface IBookingD extends IBooking, mongoose.Document {}
 
 const BookingDetailSchema: mongoose.Schema = new mongoose.Schema({
   bizItemId: { type: String },
@@ -24,4 +15,4 @@ const BookingSchema: mongoose.Schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 })
 
-export default mongoose.model<IBooking>('Booking', BookingSchema)
+export default mongoose.model<IBookingD>('Booking', BookingSchema)

@@ -1,15 +1,3 @@
-type BizItemInfoResponse {
-  error: Boolean!
-  errorMessage: String
-  bizItemInfo: JSON
-}
-
-type ListOfBizItemsResponse {
-  error: Boolean!
-  errorMessage: String
-  bizItems: [BizItem]
-}
-
 type BizItem {
   businessId: String
   bizItemId: String
@@ -17,6 +5,6 @@ type BizItem {
 }
 
 type Query {
-  getBizItemInfo(bizItemId: String!): BizItemInfoResponse!
-  getListOfBizItems: ListOfBizItemsResponse!
+  getBizItemInfo(bizItemId: String!): JSON!
+  getListOfBizItems: [BizItem]!
 }
