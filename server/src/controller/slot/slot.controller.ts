@@ -1,15 +1,26 @@
-import Slot, { ISlot, SLOT_HASH_MAP_KEY, SlotState } from '../../db/slot/slot.model'
+import Slot, { ISlot, SLOT_HASH_MAP_KEY } from '../../db/slot/slot.model'
 import { CreateQuery } from 'mongoose'
 import { redis } from '../../db/database'
+import { SlotState } from '../../interface/slot/slot.interface'
 
-async function createSlot({ slotId, position, typeName }: CreateQuery<ISlot>): Promise<ISlot> {
+function createSlot({ slotId, view, typeName }: CreateQuery<ISlot>): Promise<ISlot> {
   return Slot.create({
     slotId,
-    position,
+    view,
     state: SlotState.FREE,
     typeName,
   })
     .then((data: ISlot) => {
+      return data
+    })
+    .catch((error: Error) => {
+      throw error
+    })
+}
+
+function createManySlots(slotInfos: Array<CreateQuery<ISlot>>): Promise<Array<ISlot>> {
+  return Slot.insertMany(slotInfos)
+    .then((data: Array<ISlot>) => {
       return data
     })
     .catch((error: Error) => {
@@ -41,4 +52,4 @@ function findSlotById({ slotId }: CreateQuery<{ slotId: string }>): Promise<ISlo
   })
 }
 
-export { createSlot, findSlotById }
+export { createSlot, findSlotById, createManySlots }
