@@ -1,5 +1,6 @@
 import { CreateQuery } from 'mongoose'
-import BizItem, { IBizItem } from '../../db/bizItem/bizItem.model'
+import BizItem from '../../db/bizItem/bizItem.model'
+import { IBizItem } from '../../interface/bizItem/bizItem.interface'
 
 function createBizItem({ businessId, bizItemId, slotMapId }: CreateQuery<IBizItem>): Promise<IBizItem> {
   return BizItem.create({

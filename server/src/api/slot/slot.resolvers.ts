@@ -1,15 +1,27 @@
+import { RESPONSE_CODE } from '../../constant/errorCode'
 import { findBizItemById } from '../../controller/bizItem/bizItem.controller'
-import { syncSlots } from '../../util/sync'
+import { getSlotsBySlotMapId } from '../../controller/slot/slot.controller'
+import { syncSlots } from '../../util/synchronization'
 
 const resolvers = {
+  Query: {
+    slots: async (_: unknown, { slotMapId }) => {
+      try {
+        const slots = await getSlotsBySlotMapId(slotMapId)
+        return { slots, error: false }
+      } catch (err) {
+        return { error: true, errorMessage: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+      }
+    },
+  },
   Mutation: {
     synchronizationForSlot: async (_: unknown, { bizItemId, slotMapId }) => {
-      const bizItem = await findBizItemById({ bizItemId })
       try {
-        await syncSlots({ businessId: bizItem.businessId, bizItemId, slotMapId: slotMapId })
-        return true
+        const bizItem = await findBizItemById({ bizItemId })
+        const slots = await syncSlots({ businessId: bizItem.businessId, bizItemId, slotMapId: slotMapId })
+        return { slots, error: false }
       } catch (err) {
-        return false
+        return { error: true, errorMessage: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
       }
     },
   },

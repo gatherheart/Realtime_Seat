@@ -1,3 +1,4 @@
+import { RESPONSE_CODE } from '../../constant/errorCode'
 import { findBizItemById, getBizItems } from '../../controller/bizItem/bizItem.controller'
 import { getBizItemInfo } from '../../util/api'
 
@@ -8,7 +9,7 @@ const resolvers = {
         const bizItems = await getBizItems()
         return { error: false, bizItems: bizItems }
       } catch (error) {
-        return { error: true, errorMessage: '[ERROR] unhandled error occured on server' }
+        return { error: true, errorMessage: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
       }
     },
     getBizItemInfo: async (_: unknown, { bizItemId }: { bizItemId: string }) => {
@@ -22,7 +23,7 @@ const resolvers = {
       } catch (error) {
         return {
           error: true,
-          errorMessage: '[ERROR] unhandled error occured on server',
+          errorMessage: RESPONSE_CODE.INTERNAL_SERVER_ERROR,
         }
       }
     },

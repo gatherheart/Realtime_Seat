@@ -1,3 +1,13 @@
+type SlotsResponse {
+  slots: [Slot]
+  error: Boolean
+  errorMessage: String
+}
+
+type Query {
+  slots(bizItemId: String!, slotMapId: String!): SlotsResponse
+}
+
 type Mutation {
-  synchronizationForSlot(bizItemId: String!, slotMapId: String!): Boolean
+  synchronizationForSlot(bizItemId: String!, slotMapId: String!): SlotsResponse
 }

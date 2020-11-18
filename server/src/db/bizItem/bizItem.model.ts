@@ -1,10 +1,7 @@
 import * as mongoose from 'mongoose'
+import { IBizItem } from '../../interface/bizItem/bizItem.interface'
 
-export interface IBizItem extends mongoose.Document {
-  businessId: string
-  bizItemId: string
-  slotMapId: [string]
-}
+export interface IBizItemD extends IBizItem, mongoose.Document {}
 
 const BizItemSchema: mongoose.Schema = new mongoose.Schema({
   businessId: { type: String, required: true },
@@ -12,4 +9,4 @@ const BizItemSchema: mongoose.Schema = new mongoose.Schema({
   slotMapId: { type: [String] },
 })
 
-export default mongoose.model<IBizItem>('BizItem', BizItemSchema)
+export default mongoose.model<IBizItemD>('BizItem', BizItemSchema)
