@@ -4,29 +4,11 @@ type Sample2Response {
   error: Boolean!
 }
 
-type User {
-  uid: String!
-  userName: String!
-  email: String!
-}
-
 type Slot {
   slotId: String!
-  position: Position!
+  view: String!
   state: SlotState
   typeName: String!
-}
-
-type Position {
-  x: Float
-  y: Float
-  angle: Float
-}
-
-input PositionArgs {
-  x: Float
-  y: Float
-  angle: Float
 }
 
 enum SlotState {
@@ -40,5 +22,5 @@ type Query {
 }
 
 type Mutation {
-  sample2(slotId: String!, position: PositionArgs!, typeName: String!): Sample2Response!
+  sample2(slotId: String!, view: String!, typeName: String!): Sample2Response!
 }

@@ -1,3 +1,30 @@
+type BizItemInfoResponse {
+  error: Boolean!
+  errorMessage: String
+  bizItemInfo: JSON
+}
+
+type ListOfBizItemsResponse {
+  error: Boolean!
+  errorMessage: String
+  bizItems: [BizItem]
+}
+
+type BizItem {
+  businessId: String
+  bizItemId: String
+  slotMapId: [String]
+}
+
+type Query {
+  getBizItemInfo(bizItemId: String!): BizItemInfoResponse!
+  getListOfBizItems: ListOfBizItemsResponse!
+  sample1(name: String!): SampleResponse!
+  sample2(slotId: String!): Sample2Response!
+}
+
+scalar JSON
+
 type SampleResponse {
   text: String!
   error: Boolean!
@@ -8,14 +35,10 @@ type SampleMessage {
   text: String!
 }
 
-type Query {
-  sample1(name: String!): SampleResponse!
-  sample2(uid: String!): Sample2Response!
-}
-
 type Mutation {
   sample1(channel: String!, text: String!): SampleMessage!
-  sample2(uid: String!, userName: String!, email: String!): Sample2Response!
+  sample2(slotId: String!, view: String!, typeName: String!): Sample2Response!
+  synchronizationForSlot(bizItemId: String!, slotMapId: String!): Boolean
 }
 
 type Subscription {
@@ -23,13 +46,20 @@ type Subscription {
 }
 
 type Sample2Response {
-  user: User
+  slot: Slot
   errorMessage: String
   error: Boolean!
 }
 
-type User {
-  uid: String!
-  userName: String!
-  email: String!
+type Slot {
+  slotId: String!
+  view: String!
+  state: SlotState
+  typeName: String!
+}
+
+enum SlotState {
+  FREE
+  OCCUPIED
+  SOLD
 }
