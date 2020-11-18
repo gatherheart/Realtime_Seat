@@ -1,3 +1,20 @@
+enum SlotStatus {
+  FREE
+  OCCUPIED
+  SOLD
+}
+
+type Slot {
+  slotId: String
+  view: String
+  status: SlotStatus
+  typeName: String
+}
+
+type Query {
+  slots(bizItemId: String!, slotMapId: String!): [Slot]!
+}
+
 type Mutation {
-  synchronizationForSlot(bizItemId: String!, slotMapId: String!): Boolean
+  synchronizationForSlot(bizItemId: String!, slotMapId: String!): [Slot]!
 }

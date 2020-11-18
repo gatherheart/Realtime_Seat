@@ -20,10 +20,6 @@ function getAnyData(url: string) {
 }
 
 export const getSlotInfo = async ({ businessId, bizItemId, slotMapId }: GetSlotInfoArgs) => {
-  console.log(
-    BOOKING_BASE_URL +
-      `/businesses/${businessId}/biz-items/${bizItemId}/slots/${slotMapId}/seats?status=WITH_AGENCY_OCCUPIED`,
-  )
   const slots = await getAnyData(
     BOOKING_BASE_URL +
       `/businesses/${businessId}/biz-items/${bizItemId}/slots/${slotMapId}/seats?status=WITH_AGENCY_OCCUPIED`,

@@ -9,10 +9,16 @@ config({ path: resolve(__dirname, '../.env') })
 const PORT = process.env.PORT || 4000
 
 const pubsub = new PubSub()
-const server = new GraphQLServer({ schema, context: { pubsub } })
+const server = new GraphQLServer({
+  schema,
+  context: { pubsub },
+})
+const options = {
+  port: PORT,
+}
 
 // Connect to DB
 connect()
 // Server Start
-void server.start({ port: PORT }, () => console.log(`Server is running on http://localhost:${PORT}`))
+void server.start(options, () => console.log(`Server is running on http://localhost:${PORT}`))
 server.express.use(logger('dev'))
