@@ -5,7 +5,9 @@ export enum SlotStatus {
 }
 
 export interface ISlot {
-  slotId: string
+  bizItemId: string
+  slotMapId: string
+  number: string
   view: string
   status: SlotStatus
   typeName: string

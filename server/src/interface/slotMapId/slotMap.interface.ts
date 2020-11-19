@@ -1,6 +1,7 @@
-import { ISlot } from '../slot/slot.interface'
+import { Types } from 'mongoose'
 
 export interface ISlotMap {
+  bizItemId: string
   slotMapId: string
-  slots: [ISlot]
+  slots: [Types.ObjectId]
 }

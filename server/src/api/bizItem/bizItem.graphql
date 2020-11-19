@@ -5,6 +5,11 @@ type BizItem {
 }
 
 type Query {
-  getBizItemInfo(bizItemId: String!): JSON!
-  getListOfBizItems: [BizItem]!
+  bizItemInfo(bizItemId: String!): JSON!
+  bizItems: [BizItem]!
+  bizItem(bizItemId: String!): BizItem!
+}
+
+type Mutation {
+  createBizItem(bizItemId: String!, businessId: String!): BizItem!
 }

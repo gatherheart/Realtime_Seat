@@ -1,28 +1,16 @@
-import Slot from '../../db/slot/slot.model'
-import { CreateQuery } from 'mongoose'
+import Slot, { ISlotD } from '../../db/slot/slot.model'
+import * as mongoose from 'mongoose'
 import { redis } from '../../db/database'
-import { SlotStatus, ISlot } from '../../interface/slot/slot.interface'
+import { ISlot } from '../../interface/slot/slot.interface'
 import slotMapModel from '../../db/slotMap/slotMap.model'
-import { ISlotMap } from '../../interface/slotMapId/slotMap.interface'
-
-function createSlot({ slotId, view, typeName }: CreateQuery<ISlot>): Promise<ISlot> {
-  return Slot.create({
-    slotId,
-    view,
-    status: SlotStatus.FREE,
-    typeName,
-  })
-    .then((data: ISlot) => {
-      return data
-    })
-    .catch((error: Error) => {
-      throw error
-    })
+interface findSlotsArgs {
+  bizItemId: string
+  slotMapId: string
 }
 
-function createManySlots(slotInfos: Array<CreateQuery<ISlot>>): Promise<Array<ISlot>> {
+function createManySlots(slotInfos: Array<ISlot>): Promise<Array<ISlotD>> {
   return Slot.insertMany(slotInfos)
-    .then((data: Array<ISlot>) => {
+    .then((data: Array<ISlotD>) => {
       return data
     })
     .catch((error: Error) => {
@@ -30,53 +18,14 @@ function createManySlots(slotInfos: Array<CreateQuery<ISlot>>): Promise<Array<IS
     })
 }
 
-function getSlotsBySlotMapId(slotMapId: string): Promise<Array<ISlot>> {
-  return new Promise<Array<ISlot>>((resolve, reject) => {
-    redis.hget(process.env.SLOT_HASH_MAP_KEY, slotMapId, (err, reply) => {
-      if (err) {
-        return reject(err)
-      } else if (reply) {
-        const slotMap: ISlotMap = JSON.parse(reply) as ISlotMap
-        resolve(slotMap.slots)
-      } else {
-        slotMapModel
-          .findOne({
-            slotMapId,
-          })
-          .then((slotMap: ISlotMap) => {
-            redis.hset(process.env.SLOT_HASH_MAP_KEY, slotMapId, JSON.stringify(slotMap))
-            resolve(slotMap.slots)
-          })
-          .catch((error: Error) => {
-            throw error
-          })
-      }
-    })
-  })
+async function getSlots({ bizItemId, slotMapId }: findSlotsArgs) {
+  try {
+    const field = { bizItemId, slotMapId }
+    const slotMap = await slotMapModel.findOne(field).populate('slots')
+    return slotMap.slots
+  } catch (err) {
+    throw new Error(err)
+  }
 }
 
-function findSlotById({ slotId }: { slotId: string }): Promise<ISlot> {
-  return new Promise<ISlot>((resolve, reject) => {
-    redis.hget(process.env.SLOT_HASH_MAP_KEY, slotId, (err, reply) => {
-      if (err) {
-        return reject(err)
-      } else if (reply) {
-        const foundSlot: ISlot = JSON.parse(reply) as ISlot
-        resolve(foundSlot)
-      } else {
-        Slot.findOne({
-          slotId,
-        })
-          .then((foundSlot: ISlot) => {
-            redis.hset(process.env.SLOT_HASH_MAP_KEY, slotId, JSON.stringify(foundSlot))
-            resolve(foundSlot)
-          })
-          .catch((error: Error) => {
-            throw error
-          })
-      }
-    })
-  })
-}
-
-export { createSlot, findSlotById, createManySlots, getSlotsBySlotMapId }
+export { createManySlots, getSlots }
