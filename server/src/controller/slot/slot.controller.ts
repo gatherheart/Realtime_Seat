@@ -4,7 +4,6 @@ import { redis } from '../../db/database'
 import { SlotStatus, ISlot } from '../../interface/slot/slot.interface'
 import slotMapModel from '../../db/slotMap/slotMap.model'
 import { ISlotMap } from '../../interface/slotMapId/slotMap.interface'
-import { SLOT_HASH_MAP_KEY } from '../../constant/hashMapKey'
 
 function createSlot({ slotId, view, typeName }: CreateQuery<ISlot>): Promise<ISlot> {
   return Slot.create({
@@ -33,7 +32,7 @@ function createManySlots(slotInfos: Array<CreateQuery<ISlot>>): Promise<Array<IS
 
 function getSlotsBySlotMapId(slotMapId: string): Promise<Array<ISlot>> {
   return new Promise<Array<ISlot>>((resolve, reject) => {
-    redis.hget(SLOT_HASH_MAP_KEY, slotMapId, (err, reply) => {
+    redis.hget(process.env.SLOT_HASH_MAP_KEY, slotMapId, (err, reply) => {
       if (err) {
         return reject(err)
       } else if (reply) {
@@ -45,7 +44,7 @@ function getSlotsBySlotMapId(slotMapId: string): Promise<Array<ISlot>> {
             slotMapId,
           })
           .then((slotMap: ISlotMap) => {
-            redis.hset(SLOT_HASH_MAP_KEY, slotMapId, JSON.stringify(slotMap))
+            redis.hset(process.env.SLOT_HASH_MAP_KEY, slotMapId, JSON.stringify(slotMap))
             resolve(slotMap.slots)
           })
           .catch((error: Error) => {
@@ -58,7 +57,7 @@ function getSlotsBySlotMapId(slotMapId: string): Promise<Array<ISlot>> {
 
 function findSlotById({ slotId }: { slotId: string }): Promise<ISlot> {
   return new Promise<ISlot>((resolve, reject) => {
-    redis.hget(SLOT_HASH_MAP_KEY, slotId, (err, reply) => {
+    redis.hget(process.env.SLOT_HASH_MAP_KEY, slotId, (err, reply) => {
       if (err) {
         return reject(err)
       } else if (reply) {
@@ -69,7 +68,7 @@ function findSlotById({ slotId }: { slotId: string }): Promise<ISlot> {
           slotId,
         })
           .then((foundSlot: ISlot) => {
-            redis.hset(SLOT_HASH_MAP_KEY, slotId, JSON.stringify(foundSlot))
+            redis.hset(process.env.SLOT_HASH_MAP_KEY, slotId, JSON.stringify(foundSlot))
             resolve(foundSlot)
           })
           .catch((error: Error) => {
