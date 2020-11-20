@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { IBizItem } from '../../interface/bizItem/bizItem.interface'
+import { IBizItem } from '@interface/bizItem/bizItem.interface'
 
 export interface IBizItemD extends IBizItem, mongoose.Document {}
 

@@ -7,7 +7,6 @@ export const redis = redisClient(6379, 'localhost')
 let database: Mongoose.Connection
 export const connect = (): void => {
   const uri = process.env.MONGO_URI
-  console.log(uri)
   if (database) {
     return
   }

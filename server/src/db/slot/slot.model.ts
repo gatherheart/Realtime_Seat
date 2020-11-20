@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ISlot } from '../../interface/slot/slot.interface'
+import { ISlot } from '@interface/slot/slot.interface'
 
 export interface ISlotD extends ISlot, mongoose.Document {}
 

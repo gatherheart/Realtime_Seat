@@ -5,7 +5,7 @@ type BizItem {
 }
 
 type Query {
-  bizItemInfo(bizItemId: String!): JSON!
+  bizItemDetails(bizItemId: String!): JSON!
   bizItems: [BizItem]!
   bizItem(bizItemId: String!): BizItem!
 }

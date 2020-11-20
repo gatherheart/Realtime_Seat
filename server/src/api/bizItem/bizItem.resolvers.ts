@@ -1,5 +1,5 @@
-import { createBizItem, findBizItemById, getBizItems } from '../../controller/bizItem/bizItem.controller'
-import { getBizItemInfo } from '../../util/api'
+import { createBizItem, findBizItemById, getBizItems } from '@controller/bizItem/bizItem.controller'
+import { getBizItemDetails } from '@util/api'
 
 const resolvers = {
   Query: {
@@ -11,11 +11,11 @@ const resolvers = {
         throw new Error(err)
       }
     },
-    bizItemInfo: async (_: unknown, { bizItemId }: { bizItemId: string }) => {
+    bizItemDetails: async (_: unknown, { bizItemId }: { bizItemId: string }) => {
       try {
         const bizItem = await findBizItemById({ bizItemId })
-        const bizItemInfo = await getBizItemInfo({ businessId: bizItem.businessId, bizItemId })
-        return bizItemInfo
+        const bizItemDetails = await getBizItemDetails({ businessId: bizItem.businessId, bizItemId })
+        return bizItemDetails
       } catch (err) {
         throw new Error(err)
       }

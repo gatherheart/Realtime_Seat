@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { IBooking } from '../../interface/booking/booking.interface'
+import { IBooking } from '@interface/booking/booking.interface'
 
 export interface IBookingD extends IBooking, mongoose.Document {}
 

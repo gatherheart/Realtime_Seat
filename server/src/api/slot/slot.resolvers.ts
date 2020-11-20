@@ -1,5 +1,5 @@
-import { findBizItemById } from '../../controller/bizItem/bizItem.controller'
-import { getSlots, getSlot, changeSlotStates } from '../../controller/slot/slot.controller'
+import { findBizItemById } from '@controller/bizItem/bizItem.controller'
+import { getSlots, getSlot, changeSlotStates } from '@controller/slot/slot.controller'
 
 const resolvers = {
   Query: {
