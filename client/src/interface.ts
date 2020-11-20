@@ -5,6 +5,7 @@ export interface IBizItem {
   slotMapId: string[]
 }
 
+// BizItemInfo
 export interface IExtraDesc {
   title: string
   context: string
@@ -22,7 +23,6 @@ interface IAddress {
   placeName?: string
 }
 
-// BizItemInfo
 export interface IBizItemInfo {
   name: string
   desc: string
@@ -63,6 +63,11 @@ export interface ISlotMap {
 }
 
 // Reducer
+export interface IPerformanceTime {
+  date: Date
+  slotId: string
+}
+
 export interface ISeat {
   x: number
   y: number
@@ -76,5 +81,6 @@ export interface IState {
   thumbnail?: string
   extraDesc?: IExtraDesc[]
   address?: IAddress
+  performanceTimes?: IPerformanceTime[]
   seats?: ISeat[]
 }

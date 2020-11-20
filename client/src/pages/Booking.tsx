@@ -1,15 +1,24 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Switch, Route, useRouteMatch, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { gql, useQuery } from '@apollo/client'
 
-import { IBizItemInfo } from '../interface'
+import { IBizItem, IBizItemInfo, IPerformanceTime } from '../interface'
 import Performance from '../components/performance/Performance'
 import BookingSchedule from '../components/bookingSchedule/BookingSchedule'
 import PerformanceDetails from '../components/performanceDetails/PerformanceDetails'
 import { actions } from '../reducer'
+
+const GET_LIST_OF_BIZ_ITEMS = gql`
+  query getListOfBizItems {
+    getListOfBizItems {
+      bizItemId
+      slotMapId
+    }
+  }
+`
 
 const GET_BIZ_ITEM_INFO = gql`
   query getBizItemInfo($bizItemId: String!) {
@@ -36,20 +45,42 @@ export default function Booking() {
     {
       variables,
       skip: !variables,
+      onCompleted: () => {
+        if (!getBizItemInfo) return
+
+        dispatch(
+          actions.setState({
+            id: variables.bizItemId,
+            name: getBizItemInfo.name,
+            desc: getBizItemInfo.desc,
+            extraDesc: getBizItemInfo.extraDescJson,
+            address: getBizItemInfo.addressJson,
+          }),
+        )
+      },
     },
   )
-  useEffect(() => {
-    if (!getBizItemInfo) return
-    dispatch(
-      actions.setState({
-        id: variables.bizItemId,
-        name: getBizItemInfo.name,
-        desc: getBizItemInfo.desc,
-        extraDesc: getBizItemInfo.extraDescJson,
-        address: getBizItemInfo.addressJson,
-      }),
-    )
-  }, [getBizItemInfo])
+
+  const { data: { getListOfBizItems } = {} } = useQuery<{ getListOfBizItems: IBizItem[] }>(GET_LIST_OF_BIZ_ITEMS, {
+    onCompleted: () => {
+      // Dummy date
+      const days = [new Date(), new Date()]
+      days[0].setDate(days[0].getDate() + 1)
+      days[0].setHours(17, 0, 0, 0)
+      days[1].setDate(days[1].getDate() + 2)
+      days[1].setHours(17, 0, 0, 0)
+      let times: IPerformanceTime[] = []
+      if (Array.isArray(getListOfBizItems) && Array.isArray(getListOfBizItems[0].slotMapId)) {
+        times = getListOfBizItems[0].slotMapId.map((id, idx) => ({ date: days[idx], slotId: id }))
+      }
+
+      dispatch(
+        actions.setState({
+          performanceTimes: times,
+        }),
+      )
+    },
+  })
 
   return (
     <Container maxWidth="md" className={classes.container}>
