@@ -1,12 +1,17 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-export default function Details(): JSX.Element {
-  const history = useHistory()
+import ExtraDesc from './ExtraDesc'
+import { IState } from '../../interface'
+
+export default function Details() {
+  const { extraDesc } = useSelector((state: IState) => state)
+
   return (
-    <div>
-      Details
-      <div onClick={() => history.push('/location')}>switch</div>
-    </div>
+    <>
+      {Array.isArray(extraDesc) &&
+        Array.isArray(extraDesc) &&
+        extraDesc.map((p, idx) => <ExtraDesc {...p} key={idx} />)}
+    </>
   )
 }

@@ -8,13 +8,13 @@ import Payment from './pages/Payment'
 
 import './App.css'
 
-function App(): JSX.Element {
+function App() {
   return (
     <BrowserRouter>
       <div className="App">
         <Route exact path="/" component={Home} />
         <Switch>
-          <Route path="/booking" component={Booking} />
+          <Route path="/booking/:bizItemId" component={Booking} />
           <Route path="/booking-seat" component={BookingSeat} />
           <Route path="/payment" component={Payment} />
         </Switch>

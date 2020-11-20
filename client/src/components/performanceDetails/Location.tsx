@@ -1,12 +1,14 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-export default function Location(): JSX.Element {
-  const history = useHistory()
+import { IState } from '../../interface'
+
+export default function Location() {
+  const { address } = useSelector((state: IState) => state)
   return (
-    <div>
-      Location
-      <div onClick={() => history.push('/')}>switch</div>
-    </div>
+    <>
+      {address?.address}
+      {address?.placeName}
+    </>
   )
 }
