@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import { State } from '../../reducer'
+import { IState } from '../../interface'
 
 const useStyle = makeStyles({
   poster: {},
@@ -14,7 +14,7 @@ const useStyle = makeStyles({
 
 export default function Poster() {
   const classes = useStyle()
-  const img = useSelector((state: State) => state.data.thumbnail)
+  const img = useSelector((state: IState) => state.thumbnail)
 
   return (
     <div className={classes.poster}>

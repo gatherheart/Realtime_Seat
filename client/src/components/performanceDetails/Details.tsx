@@ -1,8 +1,17 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { State } from '../../reducer'
+
+import ExtraDesc from './ExtraDesc'
+import { IState } from '../../interface'
 
 export default function Details() {
-  const { details } = useSelector((state: State) => state.data)
-  return <>{details}</>
+  const { extraDesc } = useSelector((state: IState) => state)
+
+  return (
+    <>
+      {Array.isArray(extraDesc) &&
+        Array.isArray(extraDesc) &&
+        extraDesc.map((p, idx) => <ExtraDesc {...p} key={idx} />)}
+    </>
+  )
 }

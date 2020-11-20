@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { State } from '../../reducer'
+import { IState } from '../../interface'
 
 export default function Location() {
-  const { location } = useSelector((state: State) => state.data)
+  const { location } = useSelector((state: IState) => state)
   return <>{location}</>
 }

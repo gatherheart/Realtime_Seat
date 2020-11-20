@@ -1,20 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Typography } from '@material-ui/core'
 
-import { State } from '../../reducer'
+import { IState } from '../../interface'
 
 export default function Content() {
-  const data = useSelector((state: State) => state.data)
-  const { name, startDate, endDate, address } = data
+  const { name, desc } = useSelector((state: IState) => state)
 
   return (
     <>
-      <Typography variant="h3">{name}</Typography>
-      <Typography>
-        {startDate.toISOString().slice(0, 10)} ~ {endDate.toISOString().slice(0, 10)}
-      </Typography>
-      <Typography>{address}</Typography>
+      <h2>{name}</h2>
+      <p>{desc}</p>
     </>
   )
 }

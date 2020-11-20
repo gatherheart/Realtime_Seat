@@ -5,10 +5,17 @@ export interface IBizItem {
   slotMapId: string[]
 }
 
+export interface IExtraDesc {
+  title: string
+  context: string
+  images: Array<{ src: string; url: string }>
+}
+
 // BizItemInfo
 export interface IBizItemInfo {
   name: string
   desc: string
+  extraDescJson: IExtraDesc[]
 }
 
 // Booking
@@ -41,4 +48,21 @@ export interface ISlot {
 export interface ISlotMap {
   slotMapId: string
   slots: ISlot[]
+}
+
+// Reducer
+export interface ISeat {
+  x: number
+  y: number
+  isOccupied: boolean
+}
+
+export interface IState {
+  id?: string
+  name?: string
+  desc?: string
+  thumbnail?: string
+  extraDesc?: IExtraDesc[]
+  location?: string
+  seats?: ISeat[]
 }
