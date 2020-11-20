@@ -11,11 +11,23 @@ export interface IExtraDesc {
   images: Array<{ src: string; url: string }>
 }
 
+interface IAddress {
+  jibun?: string
+  reoadAddr?: string
+  detail?: string
+  address?: string
+  posLat?: number
+  posLong?: number
+  zoomLevel?: number
+  placeName?: string
+}
+
 // BizItemInfo
 export interface IBizItemInfo {
   name: string
   desc: string
   extraDescJson: IExtraDesc[]
+  addressJson: IAddress
 }
 
 // Booking
@@ -63,6 +75,6 @@ export interface IState {
   desc?: string
   thumbnail?: string
   extraDesc?: IExtraDesc[]
-  location?: string
+  address?: IAddress
   seats?: ISeat[]
 }

@@ -46,6 +46,7 @@ export default function Booking() {
         name: getBizItemInfo.name,
         desc: getBizItemInfo.desc,
         extraDesc: getBizItemInfo.extraDescJson,
+        address: getBizItemInfo.addressJson,
       }),
     )
   }, [getBizItemInfo])

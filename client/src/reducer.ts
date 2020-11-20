@@ -9,7 +9,7 @@ const initialState: IState = {
   desc: '',
   thumbnail: bookingNaver,
   extraDesc: [],
-  location: '오시는 길',
+  address: {},
   seats: [],
 }
 

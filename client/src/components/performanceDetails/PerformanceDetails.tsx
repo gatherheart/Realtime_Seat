@@ -7,7 +7,7 @@ import Location from './Location'
 
 export default function PerformanceDetails() {
   return (
-    <>
+    <div>
       <MemoryRouter>
         <AppBar position="static">
           <Link to="/">상세정보</Link>
@@ -18,6 +18,6 @@ export default function PerformanceDetails() {
           <Route path="/location" component={Location} />
         </Switch>
       </MemoryRouter>
-    </>
+    </div>
   )
 }
