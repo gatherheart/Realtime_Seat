@@ -1,6 +1,5 @@
 import { findBizItemById } from '../../controller/bizItem/bizItem.controller'
 import { getSlots, getSlot, changeSlotStates } from '../../controller/slot/slot.controller'
-import { syncSlots } from '../../util/synchronization'
 
 const resolvers = {
   Query: {
@@ -21,10 +20,9 @@ const resolvers = {
     },
   },
   Mutation: {
-    updateSlots: async (_: unknown, { bizItemId, slotMapId, numbers }) => {
+    updateSlots: async (_: unknown, { bizItemId, slotMapId, numbers, status }) => {
       try {
-        console.log('update')
-        return await changeSlotStates({ bizItemId, slotMapId, numbers })
+        return await changeSlotStates({ bizItemId, slotMapId, numbers, status })
       } catch (err) {
         throw new Error(err)
       }
@@ -32,8 +30,6 @@ const resolvers = {
     syncSlots: async (_: unknown, { bizItemId, slotMapId }) => {
       try {
         const bizItem = await findBizItemById({ bizItemId })
-        const slots = await syncSlots({ businessId: bizItem.businessId, bizItemId, slotMapId: slotMapId })
-        return slots
       } catch (err) {
         throw new Error(err)
       }

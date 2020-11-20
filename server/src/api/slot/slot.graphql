@@ -19,6 +19,6 @@ type Query {
 }
 
 type Mutation {
-  updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!): [Slot]!
+  updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
   syncSlots(bizItemId: String!, slotMapId: String!): [Slot]!
 }

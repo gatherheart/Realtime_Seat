@@ -1,7 +1,7 @@
 type BizItem {
   businessId: String
   bizItemId: String
-  slotMapId: [String]
+  slotMapIds: [String]
 }
 
 type Query {
@@ -11,5 +11,5 @@ type Query {
 }
 
 type Mutation {
-  createBizItem(bizItemId: String!, businessId: String!): BizItem!
+  createBizItem(bizItemId: String!, businessId: String!, slotMapIds: [String]!): [BizItem]!
 }
