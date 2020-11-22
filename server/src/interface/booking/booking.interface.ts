@@ -1,6 +1,6 @@
 export interface IBooking {
   bookingId: string
-  booking: [BookingDetail]
+  booking: BookingDetail[]
   createdAt: Date
 }
 

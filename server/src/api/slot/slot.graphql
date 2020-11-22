@@ -5,16 +5,20 @@ enum SlotStatus {
 }
 
 type Slot {
-  slotId: String
+  bizItemId: String
+  slotMapId: String
+  number: String
   view: String
   status: SlotStatus
   typeName: String
 }
 
 type Query {
+  slot(bizItemId: String!, slotMapId: String!, number: String!): Slot!
   slots(bizItemId: String!, slotMapId: String!): [Slot]!
 }
 
 type Mutation {
-  synchronizationForSlot(bizItemId: String!, slotMapId: String!): [Slot]!
+  updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
+  syncSlots(bizItemId: String!, slotMapId: String!): [Slot]!
 }
