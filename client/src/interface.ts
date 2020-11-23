@@ -2,7 +2,7 @@
 export interface IBizItem {
   businessId: string
   bizItemId: string
-  slotMapId: string[]
+  slotMapIds: string[]
 }
 
 // BizItemInfo
@@ -23,7 +23,7 @@ interface IAddress {
   placeName?: string
 }
 
-export interface IBizItemInfo {
+export interface IBizItemDetails {
   name: string
   desc: string
   extraDescJson: IExtraDesc[]
@@ -31,12 +31,14 @@ export interface IBizItemInfo {
 }
 
 // Booking
+// un-used
 export interface BookingDetail {
   bizItemId: string
   slotId: string
   slotMapId: string
 }
 
+// un-used
 export interface IBooking {
   bookingId: string
   booking: BookingDetail[]
@@ -51,13 +53,17 @@ export enum SlotStatus {
 }
 
 export interface ISlot {
-  slotId: string
+  bizItemId: string
+  slotMapId: string
+  number: string
   view: string
   status: SlotStatus
   typeName: string
 }
 
+// un-used
 export interface ISlotMap {
+  bizItemId: string
   slotMapId: string
   slots: ISlot[]
 }

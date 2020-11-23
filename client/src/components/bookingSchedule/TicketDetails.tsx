@@ -7,7 +7,8 @@ import { IState, ISlot } from '../../interface'
 const GET_SLOTS = gql`
   query getSlots($bizItemId: String!, $slotMapId: String!) {
     slots(bizItemId: $bizItemId, slotMapId: $slotMapId) {
-      slotId
+      bizItemId
+      slotMapId
       view
       status
       typeName
