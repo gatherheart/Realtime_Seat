@@ -1,8 +1,8 @@
+import * as mongodb from 'mongodb'
 import Slot, { ISlotD } from '@db/slot/slot.model'
 import { ISlot, SlotStatus } from '@interface/slot/slot.interface'
 import slotMapModel from '@db/slotMap/slotMap.model'
 import slotModel from '@db/slot/slot.model'
-import * as mongodb from 'mongodb'
 
 interface getSlotsArgs {
   bizItemId: string

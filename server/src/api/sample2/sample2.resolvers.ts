@@ -1,6 +1,4 @@
 import { getSlots } from '../../controller/slot/slot.controller'
-import { Types } from 'mongoose'
-import { ISlot } from '../../interface/slot/slot.interface'
 
 const resolvers = {
   Query: {

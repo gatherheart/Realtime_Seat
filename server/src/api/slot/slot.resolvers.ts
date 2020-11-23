@@ -1,5 +1,6 @@
-import { findBizItemById } from '@controller/bizItem/bizItem.controller'
 import { getSlots, getSlot, changeSlotStates } from '@controller/slot/slot.controller'
+import { IContext } from '@interface/graphql.interface'
+import { SlotStatus } from '@interface/slot/slot.interface'
 
 const resolvers = {
   Query: {
@@ -27,12 +28,32 @@ const resolvers = {
         throw new Error(err)
       }
     },
-    syncSlots: async (_: unknown, { bizItemId, slotMapId }) => {
-      try {
-        const bizItem = await findBizItemById({ bizItemId })
-      } catch (err) {
-        throw new Error(err)
-      }
+    pubSlots: async (
+      _: unknown,
+      {
+        bizItemId,
+        slotMapId,
+        numbers,
+        status,
+      }: { bizItemId: string; slotMapId: string; numbers: string[]; status: SlotStatus },
+      { pubsub }: IContext,
+    ) => {
+      const channel = bizItemId + slotMapId
+      const slots = await changeSlotStates({ bizItemId, slotMapId, numbers, status })
+      pubsub.publish(channel, { slots: { numbers, status } })
+      return slots
+    },
+  },
+  Subscription: {
+    slots: {
+      subscribe: (
+        _: unknown,
+        { bizItemId, slotMapId }: { bizItemId: string; slotMapId: string },
+        { pubsub }: IContext,
+      ) => {
+        const channel = bizItemId + slotMapId
+        return pubsub.asyncIterator(channel)
+      },
     },
   },
 }

@@ -13,6 +13,11 @@ type Slot {
   typeName: String
 }
 
+type SlotChanges {
+  numbers: [String]
+  status: SlotStatus
+}
+
 type Query {
   slot(bizItemId: String!, slotMapId: String!, number: String!): Slot!
   slots(bizItemId: String!, slotMapId: String!): [Slot]!
@@ -21,4 +26,9 @@ type Query {
 type Mutation {
   updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
   syncSlots(bizItemId: String!, slotMapId: String!): [Slot]!
+  pubSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
+}
+
+type Subscription {
+  slots(bizItemId: String!, slotMapId: String!): SlotChanges!
 }
