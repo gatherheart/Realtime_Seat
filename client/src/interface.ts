@@ -65,7 +65,7 @@ export interface ISlotMap {
 // Reducer
 export interface IPerformanceTime {
   date: Date
-  slotId: string
+  slotMapId: string
 }
 
 export interface ISeat {

@@ -66,12 +66,12 @@ export default function Booking() {
       // Dummy date
       const days = [new Date(), new Date()]
       days[0].setDate(days[0].getDate() + 1)
-      days[0].setHours(17, 0, 0, 0)
+      days[0].setHours(19, 0, 0, 0)
       days[1].setDate(days[1].getDate() + 2)
-      days[1].setHours(17, 0, 0, 0)
+      days[1].setHours(20, 30, 0, 0)
       let times: IPerformanceTime[] = []
       if (Array.isArray(getListOfBizItems) && Array.isArray(getListOfBizItems[0].slotMapId)) {
-        times = getListOfBizItems[0].slotMapId.map((id, idx) => ({ date: days[idx], slotId: id }))
+        times = getListOfBizItems[0].slotMapId.map((id, idx) => ({ date: days[idx], slotMapId: id }))
       }
 
       dispatch(
