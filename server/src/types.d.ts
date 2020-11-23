@@ -1,117 +1,138 @@
-export type Maybe<T> = T | null
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
+export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string
-  String: string
-  Boolean: boolean
-  Int: number
-  Float: number
-  JSON: any
-}
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  JSON: any;
+};
 
 export type BizItem = {
-  __typename?: 'BizItem'
-  businessId?: Maybe<Scalars['String']>
-  bizItemId?: Maybe<Scalars['String']>
-  slotMapId?: Maybe<Array<Maybe<Scalars['String']>>>
-}
+  __typename?: 'BizItem';
+  businessId?: Maybe<Scalars['String']>;
+  bizItemId?: Maybe<Scalars['String']>;
+  slotMapIds?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
 
-export type BizItemInfoResponse = {
-  __typename?: 'BizItemInfoResponse'
-  error: Scalars['Boolean']
-  errorMessage?: Maybe<Scalars['String']>
-  bizItemInfo?: Maybe<Scalars['JSON']>
-}
-
-export type ListOfBizItemsResponse = {
-  __typename?: 'ListOfBizItemsResponse'
-  error: Scalars['Boolean']
-  errorMessage?: Maybe<Scalars['String']>
-  bizItems?: Maybe<Array<Maybe<BizItem>>>
-}
 
 export type Mutation = {
-  __typename?: 'Mutation'
-  sample1: SampleMessage
-  sample2: Sample2Response
-  synchronizationForSlot?: Maybe<Scalars['Boolean']>
-}
+  __typename?: 'Mutation';
+  createBizItem: Array<Maybe<BizItem>>;
+  sample1: SampleMessage;
+  sample2: Slot;
+  updateSlots: Array<Maybe<Slot>>;
+  syncSlots: Array<Maybe<Slot>>;
+};
+
+
+export type MutationCreateBizItemArgs = {
+  bizItemId: Scalars['String'];
+  businessId: Scalars['String'];
+  slotMapIds: Array<Maybe<Scalars['String']>>;
+};
+
 
 export type MutationSample1Args = {
-  channel: Scalars['String']
-  text: Scalars['String']
-}
+  channel: Scalars['String'];
+  text: Scalars['String'];
+};
+
 
 export type MutationSample2Args = {
-  slotId: Scalars['String']
-  view: Scalars['String']
-  typeName: Scalars['String']
-}
+  slotId: Scalars['String'];
+  view: Scalars['String'];
+  typeName: Scalars['String'];
+};
 
-export type MutationSynchronizationForSlotArgs = {
-  bizItemId: Scalars['String']
-  slotMapId: Scalars['String']
-}
+
+export type MutationUpdateSlotsArgs = {
+  bizItemId: Scalars['String'];
+  slotMapId: Scalars['String'];
+  numbers: Array<Maybe<Scalars['String']>>;
+  status: SlotStatus;
+};
+
+
+export type MutationSyncSlotsArgs = {
+  bizItemId: Scalars['String'];
+  slotMapId: Scalars['String'];
+};
 
 export type Query = {
-  __typename?: 'Query'
-  getBizItemInfo: BizItemInfoResponse
-  getListOfBizItems: ListOfBizItemsResponse
-  sample1: SampleResponse
-  sample2: Sample2Response
-}
+  __typename?: 'Query';
+  bizItemDetails: Scalars['JSON'];
+  bizItems: Array<Maybe<BizItem>>;
+  bizItem: BizItem;
+  sample1: Scalars['String'];
+  sample2: Slot;
+  slot: Slot;
+  slots: Array<Maybe<Slot>>;
+};
 
-export type QueryGetBizItemInfoArgs = {
-  bizItemId: Scalars['String']
-}
+
+export type QueryBizItemDetailsArgs = {
+  bizItemId: Scalars['String'];
+};
+
+
+export type QueryBizItemArgs = {
+  bizItemId: Scalars['String'];
+};
+
 
 export type QuerySample1Args = {
-  name: Scalars['String']
-}
+  name: Scalars['String'];
+};
+
 
 export type QuerySample2Args = {
-  slotId: Scalars['String']
-}
+  slotId: Scalars['String'];
+};
 
-export type Sample2Response = {
-  __typename?: 'Sample2Response'
-  slot?: Maybe<Slot>
-  errorMessage?: Maybe<Scalars['String']>
-  error: Scalars['Boolean']
-}
+
+export type QuerySlotArgs = {
+  bizItemId: Scalars['String'];
+  slotMapId: Scalars['String'];
+  number: Scalars['String'];
+};
+
+
+export type QuerySlotsArgs = {
+  bizItemId: Scalars['String'];
+  slotMapId: Scalars['String'];
+};
 
 export type SampleMessage = {
-  __typename?: 'SampleMessage'
-  channel: Scalars['String']
-  text: Scalars['String']
-}
-
-export type SampleResponse = {
-  __typename?: 'SampleResponse'
-  text: Scalars['String']
-  error: Scalars['Boolean']
-}
+  __typename?: 'SampleMessage';
+  channel: Scalars['String'];
+  text: Scalars['String'];
+};
 
 export type Slot = {
-  __typename?: 'Slot'
-  slotId: Scalars['String']
-  view: Scalars['String']
-  state?: Maybe<SlotState>
-  typeName: Scalars['String']
-}
+  __typename?: 'Slot';
+  bizItemId?: Maybe<Scalars['String']>;
+  slotMapId?: Maybe<Scalars['String']>;
+  number?: Maybe<Scalars['String']>;
+  view?: Maybe<Scalars['String']>;
+  status?: Maybe<SlotStatus>;
+  typeName?: Maybe<Scalars['String']>;
+};
 
-export enum SlotState {
+export enum SlotStatus {
   Free = 'FREE',
   Occupied = 'OCCUPIED',
-  Sold = 'SOLD',
+  Sold = 'SOLD'
 }
 
 export type Subscription = {
-  __typename?: 'Subscription'
-  sample1: SampleMessage
-}
+  __typename?: 'Subscription';
+  sample1: SampleMessage;
+};
+
 
 export type SubscriptionSample1Args = {
-  channel: Scalars['String']
-}
+  channel: Scalars['String'];
+};

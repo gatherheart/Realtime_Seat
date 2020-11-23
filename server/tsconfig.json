@@ -1,8 +1,17 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
+    "rootDir": "src",
+    "baseUrl": ".",
     "outDir": "dist",
+    "sourceMap": true,
     "strict": false,
-    "lib": ["esnext", "dom"]
-  }
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@interface/*": ["src/interface/*"],
+      "@db/*": ["src/db/*"],
+      "@util/*": ["src/util/*"],
+      "@controller/*": ["src/controller/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "jest", "src/test/*", "jest.config.ts"]
 }

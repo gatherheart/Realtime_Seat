@@ -1,12 +1,12 @@
 import * as fetch from 'node-fetch'
 import { BOOKING_BASE_URL } from '../constant/url'
 
-interface GetBizItemInfo {
+interface GetBizItemDetailsArgs {
   businessId: string
   bizItemId: string
 }
 
-export interface GetSlotInfoArgs extends GetBizItemInfo {
+export interface GetSlotInfoArgs extends GetBizItemDetailsArgs {
   slotMapId: string
 }
 
@@ -27,7 +27,7 @@ export const getSlotInfo = async ({ businessId, bizItemId, slotMapId }: GetSlotI
   return slots
 }
 
-export const getBizItemInfo = async ({ businessId, bizItemId }: GetBizItemInfo) => {
+export const getBizItemDetails = async ({ businessId, bizItemId }: GetBizItemDetailsArgs) => {
   const bizItemInfo = await getAnyData(BOOKING_BASE_URL + `/businesses/${businessId}/biz-items/${bizItemId}`)
   return bizItemInfo
 }

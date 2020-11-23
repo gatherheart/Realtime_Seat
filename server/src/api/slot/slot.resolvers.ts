@@ -1,12 +1,18 @@
-import { findBizItemById } from '../../controller/bizItem/bizItem.controller'
-import { getSlotsBySlotMapId } from '../../controller/slot/slot.controller'
-import { syncSlots } from '../../util/synchronization'
+import { findBizItemById } from '@controller/bizItem/bizItem.controller'
+import { getSlots, getSlot, changeSlotStates } from '@controller/slot/slot.controller'
 
 const resolvers = {
   Query: {
-    slots: async (_: unknown, { slotMapId }) => {
+    slot: (_: unknown, { bizItemId, slotMapId, number }) => {
       try {
-        const slots = await getSlotsBySlotMapId(slotMapId)
+        return getSlot({ bizItemId, slotMapId, number })
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    slots: async (_: unknown, { bizItemId, slotMapId }) => {
+      try {
+        const slots = await getSlots({ bizItemId, slotMapId })
         return slots
       } catch (err) {
         throw new Error(err)
@@ -14,11 +20,16 @@ const resolvers = {
     },
   },
   Mutation: {
-    synchronizationForSlot: async (_: unknown, { bizItemId, slotMapId }) => {
+    updateSlots: async (_: unknown, { bizItemId, slotMapId, numbers, status }) => {
+      try {
+        return await changeSlotStates({ bizItemId, slotMapId, numbers, status })
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    syncSlots: async (_: unknown, { bizItemId, slotMapId }) => {
       try {
         const bizItem = await findBizItemById({ bizItemId })
-        const slots = await syncSlots({ businessId: bizItem.businessId, bizItemId, slotMapId: slotMapId })
-        return slots
       } catch (err) {
         throw new Error(err)
       }

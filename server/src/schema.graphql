@@ -1,65 +1,49 @@
-type BizItemInfoResponse {
-  error: Boolean!
-  errorMessage: String
-  bizItemInfo: JSON
-}
-
-type ListOfBizItemsResponse {
-  error: Boolean!
-  errorMessage: String
-  bizItems: [BizItem]
-}
-
 type BizItem {
   businessId: String
   bizItemId: String
-  slotMapId: [String]
+  slotMapIds: [String]
 }
 
 type Query {
-  getBizItemInfo(bizItemId: String!): BizItemInfoResponse!
-  getListOfBizItems: ListOfBizItemsResponse!
-  sample1(name: String!): SampleResponse!
-  sample2(slotId: String!): Sample2Response!
+  bizItemDetails(bizItemId: String!): JSON!
+  bizItems: [BizItem]!
+  bizItem(bizItemId: String!): BizItem!
+  sample1(name: String!): String!
+  sample2(slotId: String!): Slot!
+  slot(bizItemId: String!, slotMapId: String!, number: String!): Slot!
+  slots(bizItemId: String!, slotMapId: String!): [Slot]!
+}
+
+type Mutation {
+  createBizItem(bizItemId: String!, businessId: String!, slotMapIds: [String]!): [BizItem]!
+  sample1(channel: String!, text: String!): SampleMessage!
+  sample2(slotId: String!, view: String!, typeName: String!): Slot!
+  updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
+  syncSlots(bizItemId: String!, slotMapId: String!): [Slot]!
 }
 
 scalar JSON
-
-type SampleResponse {
-  text: String!
-  error: Boolean!
-}
 
 type SampleMessage {
   channel: String!
   text: String!
 }
 
-type Mutation {
-  sample1(channel: String!, text: String!): SampleMessage!
-  sample2(slotId: String!, view: String!, typeName: String!): Sample2Response!
-  synchronizationForSlot(bizItemId: String!, slotMapId: String!): Boolean
-}
-
 type Subscription {
   sample1(channel: String!): SampleMessage!
 }
 
-type Sample2Response {
-  slot: Slot
-  errorMessage: String
-  error: Boolean!
-}
-
-type Slot {
-  slotId: String!
-  view: String!
-  state: SlotState
-  typeName: String!
-}
-
-enum SlotState {
+enum SlotStatus {
   FREE
   OCCUPIED
   SOLD
+}
+
+type Slot {
+  bizItemId: String
+  slotMapId: String
+  number: String
+  view: String
+  status: SlotStatus
+  typeName: String
 }

@@ -2,6 +2,8 @@ import { ISlot, SlotStatus } from '../interface/slot/slot.interface'
 import { getSlotInfo } from './api'
 import { createManySlots } from '../controller/slot/slot.controller'
 import slotMapModel from '../db/slotMap/slotMap.model'
+import { Types } from 'mongoose'
+import { ISlotD } from '../db/slot/slot.model'
 
 interface syncSlotsArgs {
   businessId: string
@@ -18,17 +20,22 @@ export const syncSlots = async ({ businessId, bizItemId, slotMapId }: syncSlotsA
     slotInfo.seatGroups.forEach((seatGroup) => {
       seatGroup.seats.forEach((seat) =>
         seats.push({
+          bizItemId: bizItemId,
+          slotMapId: slotMapId,
+          number: seat.number,
           state: SlotStatus.FREE,
-          slotId: seat.number,
           view: seat.view,
           typeName: seatGroup.typeName,
         }),
       )
     })
-    const createdSeats: ISlot[] = await createManySlots(seats)
+    const createdSeats: ISlotD[] = await createManySlots(seats)
+    const slots: Types.ObjectId[] = createdSeats.map((c) => c.id)
+
     await slotMapModel.create({
+      bizItemId: bizItemId,
       slotMapId: slotMapId,
-      slots: createdSeats,
+      slots: slots,
     })
     return createdSeats
   } catch (err) {
