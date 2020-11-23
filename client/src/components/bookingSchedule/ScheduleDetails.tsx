@@ -15,7 +15,7 @@ export default function ScheduleDetails() {
 
   const handleChangeCalendar = (date: Date | Date[]) => {
     const timesOfSelectedDay: IPerformanceTime[] =
-      performanceTimes?.filter((time) => differenceInCalendarDays(time.date, date as Date) === 0) || []
+      performanceTimes?.filter((time) => differenceInCalendarDays(time.date, date as Date) === 0) ?? []
     setTimes(timesOfSelectedDay)
   }
 

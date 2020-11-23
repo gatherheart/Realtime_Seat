@@ -5,7 +5,7 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { gql, useQuery } from '@apollo/client'
 
-import { IBizItem, IBizItemDetails, IPerformanceTime } from '../interface'
+import { IBizItem, IBizItemDetails } from '../interface'
 import Performance from '../components/performance/Performance'
 import BookingSchedule from '../components/bookingSchedule/BookingSchedule'
 import PerformanceDetails from '../components/performanceDetails/PerformanceDetails'
@@ -69,10 +69,8 @@ export default function Booking() {
       days[0].setHours(19, 0, 0, 0)
       days[1].setDate(days[1].getDate() + 2)
       days[1].setHours(20, 30, 0, 0)
-      let times: IPerformanceTime[] = []
-      if (Array.isArray(bizItems) && Array.isArray(bizItems[0].slotMapIds)) {
-        times = bizItems[0].slotMapIds.map((id, idx) => ({ date: days[idx], slotMapId: id }))
-      }
+
+      const times = bizItems?.[0].slotMapIds?.map((id, idx) => ({ date: days[idx], slotMapId: id })) ?? []
 
       dispatch(
         actions.setState({
