@@ -6,6 +6,7 @@ import { IPerformanceTime } from '../../interface'
 
 const useStyles = makeStyles(() => ({
   time: {
+    display: 'inline-block',
     height: '3rem',
     width: '5rem',
     fontSize: '1rem',

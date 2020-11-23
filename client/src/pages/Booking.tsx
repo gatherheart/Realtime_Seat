@@ -64,13 +64,16 @@ export default function Booking() {
   const { data: { bizItems } = {} } = useQuery<{ bizItems: IBizItem[] }>(GET_BIZ_ITEMS, {
     onCompleted: () => {
       // Dummy date
-      const days = [new Date(), new Date()]
+      const days = [new Date(), new Date(), new Date()]
       days[0].setDate(days[0].getDate() + 1)
       days[0].setHours(19, 0, 0, 0)
-      days[1].setDate(days[1].getDate() + 2)
+      days[1].setDate(days[1].getDate() + 1)
       days[1].setHours(20, 30, 0, 0)
+      days[2].setDate(days[2].getDate() + 2)
+      days[2].setHours(20, 30, 0, 0)
 
       const times = bizItems?.[0].slotMapIds?.map((id, idx) => ({ date: days[idx], slotMapId: id })) ?? []
+      times.push({ date: days[2], slotMapId: bizItems?.[0].slotMapIds[1] as string })
 
       dispatch(
         actions.setState({
