@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
-import TicketDetails from './TicketDetails'
+import SeatDetails from '../bookingSeat/SeatDetails'
 import { IPerformanceTime } from '../../interface'
 
 const useStyles = makeStyles(() => ({
@@ -25,6 +25,7 @@ interface Props {
 
 export default function Times({ performanceTimes }: Props) {
   const history = useHistory()
+  const { bizItemId } = useParams<{ bizItemId: string }>()
   const classes = useStyles()
   const [currentId, setCurrentId] = useState('')
 
@@ -44,8 +45,12 @@ export default function Times({ performanceTimes }: Props) {
           </div>
         ))}
       </div>
-      <TicketDetails slotMapId={currentId} />
-      <Button variant="contained" color="primary" onClick={() => history.push(`/booking-seat/${currentId}`)}>
+      <SeatDetails bizItemId={bizItemId} slotMapId={currentId} />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => history.push(`/booking-seat/${bizItemId}/${currentId}`)}
+      >
         다음단계
       </Button>
     </>

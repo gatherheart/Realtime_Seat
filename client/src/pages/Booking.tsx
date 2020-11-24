@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, useRouteMatch, useParams } from 'react-router-dom'
+import { Switch, Route, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Booking() {
   const dispatch = useDispatch()
-  const match = useRouteMatch()
   const classes = useStyles()
   const variables = useParams<{ bizItemId: string }>()
   const { data: { bizItemDetails } = {} } = useQuery<{ bizItemDetails: IBizItemDetails }, { bizItemId: string }>(
@@ -87,8 +86,8 @@ export default function Booking() {
   return (
     <Container maxWidth="md" className={classes.container}>
       <Switch>
-        <Route exact path={match.path} component={Performance} />
-        <Route path={`${match.path}/:bizItemId`} component={BookingSchedule} />
+        <Route exact path={'/booking/:bizItemId'} component={Performance} />
+        <Route path={'/booking/:bizItemId/schedule'} component={BookingSchedule} />
       </Switch>
       <PerformanceDetails />
     </Container>

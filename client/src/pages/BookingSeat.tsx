@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Container, makeStyles, Grid } from '@material-ui/core'
 
 import Cart from '../components/bookingSeat/Cart'
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BookingSeat() {
   const history = useHistory()
+  const params = useParams<{ bizItemId: string; slotMapId: string }>()
   const classes = useStyles()
 
   return (
@@ -28,7 +29,7 @@ export default function BookingSeat() {
           <Seat />
         </Grid>
         <Grid item md={3} sm={3} xs={12}>
-          <SeatDetails />
+          <SeatDetails {...params} />
           <Cart />
           <div onClick={() => history.push('payment')}>next</div>
         </Grid>
