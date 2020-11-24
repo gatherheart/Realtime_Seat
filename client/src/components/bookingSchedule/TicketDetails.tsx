@@ -25,7 +25,7 @@ export default function TicketDetails({ slotMapId }: Props) {
   const [typeNameCounter, setTypeNameCounter] = useState<{ [key: string]: number }>({})
 
   const { data } = useQuery<{ slots: ISlot[] }, { bizItemId: string; slotMapId: string }>(GET_SLOTS, {
-    variables: { bizItemId, slotMapId, },
+    variables: { bizItemId, slotMapId },
     onCompleted: () => {
       const counter: { [key: string]: number } = {}
       data?.slots.forEach(({ typeName }) => (counter[typeName] = counter[typeName] + 1 || 1))
