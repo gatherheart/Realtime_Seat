@@ -10,6 +10,7 @@ const initialState: IState = {
   thumbnail: bookingNaver,
   extraDesc: [],
   address: {},
+  performanceTimes: [],
   seats: [],
 }
 

@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.react-calendar button {
+  border: none;
+  height: 2rem;
+}
+
+.react-calendar button:focus {
+  background-color: #01c73b;
+  color: white;
+  outline: none;
+}

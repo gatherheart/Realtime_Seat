@@ -1,20 +1,25 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { Grid, Button } from '@material-ui/core'
 
 import Poster from '../performance/Poster'
 import Content from '../performance/Content'
-import Calendar from './Calendar'
-import TicketDetails from './TicketDetails'
+import ScheduleDetails from './ScheduleDetails'
 
-export default function BookingSchedule(): JSX.Element {
+export default function BookingSchedule() {
   const history = useHistory()
   return (
-    <div>
-      <Poster />
-      <Content />
-      <Calendar />
-      <TicketDetails />
-      <div onClick={() => history.push('/booking-seat')}>next</div>
-    </div>
+    <Grid container>
+      <Grid item md={6} sm={6} xs={12}>
+        <Poster />
+        <Content />
+      </Grid>
+      <Grid item md={6} sm={6} xs={12}>
+        <ScheduleDetails />
+        <Button variant="contained" color="primary" onClick={() => history.push('/booking-seat')}>
+          다음단계
+        </Button>
+      </Grid>
+    </Grid>
   )
 }
