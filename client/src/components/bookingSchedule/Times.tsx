@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
+import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
@@ -22,6 +24,7 @@ interface Props {
 }
 
 export default function Times({ performanceTimes }: Props) {
+  const history = useHistory()
   const classes = useStyles()
   const [currentId, setCurrentId] = useState('')
 
@@ -32,16 +35,19 @@ export default function Times({ performanceTimes }: Props) {
   const handleClickTime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
     setCurrentId((e.target as HTMLDivElement).id)
 
-  const times = performanceTimes.map(({ date, slotMapId }) => (
-    <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>
-      {format(date, 'HH:mm', { locale: ko })}
-    </div>
-  ))
-
   return (
     <>
-      <div>{times}</div>
+      <div>
+        {performanceTimes.map(({ date, slotMapId }) => (
+          <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>
+            {format(date, 'HH:mm', { locale: ko })}
+          </div>
+        ))}
+      </div>
       <TicketDetails slotMapId={currentId} />
+      <Button variant="contained" color="primary" onClick={() => history.push(`/booking-seat/${currentId}`)}>
+        다음단계
+      </Button>
     </>
   )
 }
