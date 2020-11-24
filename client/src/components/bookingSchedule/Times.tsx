@@ -21,7 +21,7 @@ interface Props {
 
 export default function Times({ performanceTimes }: Props) {
   const classes = useStyles()
-  const [id, setId] = useState(performanceTimes[0].slotMapId)
+  const [id, setId] = useState('')
 
   useEffect(() => {
     setId(performanceTimes[0].slotMapId)
@@ -30,8 +30,8 @@ export default function Times({ performanceTimes }: Props) {
   const handleClickTime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setId((e.target as HTMLDivElement).id)
 
   const times = performanceTimes.map(({ date, slotMapId }) => {
-    let hh = `${date.getHours()}`
-    let mm = `${date.getMinutes()}`
+    let hh = date.getHours().toString()
+    let mm = date.getMinutes().toString()
     hh = hh.length > 1 ? hh : '0' + hh
     mm = mm.length > 1 ? mm : '0' + mm
     return <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>{`${hh}:${mm}`}</div>
