@@ -48,15 +48,7 @@ export default function Booking() {
         if (!bizItemDetails) return
         const { name, desc, extraDescJson, addressJson } = bizItemDetails
 
-        dispatch(
-          actions.setState({
-            id: variables.bizItemId,
-            name: name,
-            desc: desc,
-            extraDesc: extraDescJson,
-            address: addressJson,
-          }),
-        )
+        dispatch(actions.setState({ name, desc, extraDesc: extraDescJson, address: addressJson }))
       },
     },
   )

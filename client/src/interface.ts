@@ -74,19 +74,12 @@ export interface IPerformanceTime {
   slotMapId: string
 }
 
-export interface ISeat {
-  x: number
-  y: number
-  isOccupied: boolean
-}
-
 export interface IState {
-  id?: string
   name?: string
   desc?: string
   thumbnail?: string
   extraDesc?: IExtraDesc[]
   address?: IAddress
   performanceTimes?: IPerformanceTime[]
-  seats?: ISeat[]
+  seats?: { [slotId: string]: ISlot }
 }

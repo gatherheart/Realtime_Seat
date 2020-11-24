@@ -27,9 +27,9 @@ export default function BookingSeat() {
         <Grid item md={9} sm={9} xs={12}>
           <SeatMap />
           <Seat />
+          <SeatDetails {...params} />
         </Grid>
         <Grid item md={3} sm={3} xs={12}>
-          <SeatDetails {...params} />
           <Cart />
           <div onClick={() => history.push('payment')}>next</div>
         </Grid>
