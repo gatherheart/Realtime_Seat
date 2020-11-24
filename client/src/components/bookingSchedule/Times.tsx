@@ -21,13 +21,14 @@ interface Props {
 
 export default function Times({ performanceTimes }: Props) {
   const classes = useStyles()
-  const [id, setId] = useState('')
+  const [currentId, setCurrentId] = useState('')
 
   useEffect(() => {
-    setId(performanceTimes[0].slotMapId)
+    setCurrentId(performanceTimes[0].slotMapId)
   }, [performanceTimes])
 
-  const handleClickTime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setId((e.target as HTMLDivElement).id)
+  const handleClickTime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+    setCurrentId((e.target as HTMLDivElement).id)
 
   const times = performanceTimes.map(({ date, slotMapId }) => {
     let hh = date.getHours().toString()
@@ -40,7 +41,7 @@ export default function Times({ performanceTimes }: Props) {
   return (
     <>
       <div>{times}</div>
-      <TicketDetails slotMapId={id} />
+      <TicketDetails slotMapId={currentId} />
     </>
   )
 }
