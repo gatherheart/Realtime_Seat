@@ -47,14 +47,15 @@ export default function Booking() {
       skip: !variables,
       onCompleted: () => {
         if (!bizItemDetails) return
+        const { name, desc, extraDescJson, addressJson } = bizItemDetails
 
         dispatch(
           actions.setState({
             id: variables.bizItemId,
-            name: bizItemDetails.name,
-            desc: bizItemDetails.desc,
-            extraDesc: bizItemDetails.extraDescJson,
-            address: bizItemDetails.addressJson,
+            name: name,
+            desc: desc,
+            extraDesc: extraDescJson,
+            address: addressJson,
           }),
         )
       },
