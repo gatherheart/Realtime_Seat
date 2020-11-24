@@ -1,46 +1,43 @@
-import { getSlots, getSlot, changeSlotStates } from '@controller/slot/slot.controller'
+import { getSlots, getSlot, updateSlotOne, updateSlotsMany } from '@controller/slot/slot.controller'
 import { IContext } from '@interface/graphql.interface'
-import { SlotStatus } from '@interface/slot/slot.interface'
+import { ISlot, SlotStatus } from '@interface/slot/slot.interface'
 
 const resolvers = {
   Query: {
     slot: (_: unknown, { bizItemId, slotMapId, number }) => {
-      try {
-        return getSlot({ bizItemId, slotMapId, number })
-      } catch (err) {
-        throw new Error(err)
-      }
+      return getSlot({ bizItemId, slotMapId, number })
     },
     slots: async (_: unknown, { bizItemId, slotMapId }) => {
-      try {
-        const slots = await getSlots({ bizItemId, slotMapId })
-        return slots
-      } catch (err) {
-        throw new Error(err)
-      }
+      const slots = await getSlots({ bizItemId, slotMapId })
+      return slots
     },
   },
   Mutation: {
-    updateSlots: async (_: unknown, { bizItemId, slotMapId, numbers, status }) => {
-      try {
-        return await changeSlotStates({ bizItemId, slotMapId, numbers, status })
-      } catch (err) {
-        throw new Error(err)
-      }
-    },
-    pubSlots: async (
+    updateSlot: async (
       _: unknown,
       {
         bizItemId,
         slotMapId,
-        numbers,
+        number,
         status,
-      }: { bizItemId: string; slotMapId: string; numbers: string[]; status: SlotStatus },
+      }: { bizItemId: string; slotMapId: string; number: string; status: SlotStatus },
       { pubsub }: IContext,
     ) => {
       const channel = bizItemId + slotMapId
-      const slots = await changeSlotStates({ bizItemId, slotMapId, numbers, status })
-      pubsub.publish(channel, { slots: { numbers, status } })
+      let slots: ISlot[] = []
+      slots = await updateSlotOne({ bizItemId, slotMapId, number, status })
+      pubsub.publish(channel, { slots: { success: true, numbers: [number], status } })
+      return slots
+    },
+    bookSlots: async (
+      _: unknown,
+      { bizItemId, slotMapId, numbers }: { bizItemId: string; slotMapId: string; numbers: string[] },
+      { pubsub }: IContext,
+    ) => {
+      const channel = bizItemId + slotMapId
+      let slots: ISlot[] = []
+      slots = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
+      pubsub.publish(channel, { slots: { numbers, status: SlotStatus.SOLD } })
       return slots
     },
   },
