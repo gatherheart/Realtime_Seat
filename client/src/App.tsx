@@ -16,7 +16,7 @@ function App() {
         <Switch>
           <Route path="/booking/:bizItemId" component={Booking} />
           <Route path="/booking-seat/:bizItemId/:slotMapId" component={BookingSeat} />
-          <Route path="/payment" component={Payment} />
+          <Route path="/payment/:bizItemId/:slotMapId" component={Payment} />
         </Switch>
       </div>
     </BrowserRouter>

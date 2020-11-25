@@ -31,7 +31,7 @@ export default function BookingSeat() {
         </Grid>
         <Grid item md={3} sm={3} xs={12}>
           <Cart />
-          <div onClick={() => history.push('payment')}>next</div>
+          <div onClick={() => history.push(`/payment/${params.bizItemId}/${params.slotMapId}`)}>next</div>
         </Grid>
       </Grid>
     </Container>

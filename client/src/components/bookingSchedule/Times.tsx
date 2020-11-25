@@ -27,7 +27,7 @@ export default function Times({ performanceTimes }: Props) {
   const history = useHistory()
   const { bizItemId } = useParams<{ bizItemId: string }>()
   const classes = useStyles()
-  const [currentId, setCurrentId] = useState('')
+  const [currentId, setCurrentId] = useState(performanceTimes[0].slotMapId)
 
   useEffect(() => {
     setCurrentId(performanceTimes[0].slotMapId)

@@ -1,14 +1,24 @@
 import React from 'react'
-import { useHistory } from 'react-router'
+import { Container, Grid } from '@material-ui/core'
 
+import Poster from '../components/performance/Poster'
+import Content from '../components/performance/Content'
+import Cart from '../components/bookingSeat/Cart'
 import UserDetails from '../components/payment/UserDetails'
 
-export default function Payment(): JSX.Element {
-  const history = useHistory()
+export default function Payment() {
   return (
-    <div>
-      <UserDetails />
-      <div onClick={() => history.push('/')}>결제</div>
-    </div>
+    <Container>
+      <Grid container>
+        <Grid item md={6} sm={6} xs={12}>
+          <Poster />
+          <Content />
+        </Grid>
+        <Grid item md={6} sm={6} xs={12}>
+          <Cart />
+          <UserDetails />
+        </Grid>
+      </Grid>
+    </Container>
   )
 }
