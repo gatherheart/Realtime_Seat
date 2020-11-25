@@ -5,10 +5,15 @@ import { SlotStatus } from '../../interface'
 interface IProps {
   status?: SlotStatus
   number?: string
+  onPress: (arg1: string) => void
 }
 
 export default React.memo((props: IProps) => {
-  const { status = SlotStatus.FREE, number = 0 } = props
+  const { status = SlotStatus.FREE, number = '0', onPress } = props
   // To-do: Optimization for re-rendering issue
-  return <Button color={status == SlotStatus.FREE ? 'primary' : 'secondary'}>Seat</Button>
+  return (
+    <Button color={status == SlotStatus.FREE ? 'primary' : 'secondary'} onClick={() => onPress(number)}>
+      Seat
+    </Button>
+  )
 })
