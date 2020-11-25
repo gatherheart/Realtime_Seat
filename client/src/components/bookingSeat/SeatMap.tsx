@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import Seat from './Seat'
 import { ISlot, SlotStatus } from '../../interface'
 
+// DUMMY DATA - WILL BE REMOVED
+const BIZITEM_ID = '3626905'
+const SLOTMAP_ID = '192575960'
+
 interface SlotChanges {
   numbers: string[]
+  status: SlotStatus
+}
+
+interface SlotChangeArgs {
+  bizItemId: string
+  slotMapId: string
+  number: string
   status: SlotStatus
 }
 
@@ -27,24 +38,39 @@ const SLOTS_SUBSCRIPTION = gql`
     }
   }
 `
+
+const SLOT_MUTATION = gql`
+  mutation OccupySeat($bizItemId: String!, $slotMapId: String!, $number: String!, $status: SlotStatus!) {
+    updateSlot(bizItemId: $bizItemId, slotMapId: $slotMapId, number: $number, status: $status) {
+      slotMapId
+      status
+      number
+    }
+  }
+`
+
 export default function SeatMap(): JSX.Element {
   // to-do: change variables dynamically
   const { data: { slots } = {} } = useQuery<{ slots: ISlot[] | null }>(SLOTS_QUERY, {
-    variables: { bizItemId: '3626905', slotMapId: '192575960' },
+    variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID },
   })
   const { data: { slots: slotChanges } = {}, loading, error } = useSubscription<{ slots: SlotChanges | null }>(
     SLOTS_SUBSCRIPTION,
     {
-      variables: { bizItemId: '3626905', slotMapId: '192575960' },
+      variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID },
     },
   )
+  const [updateSlot, { data: updatedData }] = useMutation<{ updatedSlots: ISlot[] }, SlotChangeArgs>(SLOT_MUTATION)
 
-  const slotMap: { [key: string]: SlotStatus } = {}
+  const slotMap: { [key: string]: SlotStatus } | undefined = slots?.reduce(
+    (map, slot) => ({
+      ...map,
+      [slot.number]: slot.status || SlotStatus.FREE,
+    }),
+    {},
+  )
 
-  slots?.forEach((slot) => {
-    slotMap[slot.number] = slot.status
-  })
-  const [slotStates, setSlotStates] = useState(slotMap)
+  const [slotStates, setSlotStates] = useState(slotMap || {})
 
   useEffect(() => {
     if (slotChanges) {
@@ -59,9 +85,21 @@ export default function SeatMap(): JSX.Element {
     <div>
       <span>SeatMap</span>
       <div>
-        {Object.keys(slotMap).map((number) => {
-          return <Seat status={slotStates[number]} number={number}></Seat>
-        })}
+        {/* to-do: use Canvas & svg considering the order & position */}
+        {slotMap &&
+          Object.keys(slotMap).map((number) => {
+            return (
+              <Seat
+                status={slotStates[number]}
+                number={number}
+                onPress={(number) => {
+                  void updateSlot({
+                    variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID, status: SlotStatus.OCCUPIED, number },
+                  })
+                }}
+              ></Seat>
+            )
+          })}
       </div>
     </div>
   )

@@ -11,7 +11,6 @@ export default function BookingSeat(): JSX.Element {
   return (
     <div>
       <SeatMap />
-      <Seat />
       <SeatDetails />
       <Cart />
       <div onClick={() => history.push('payment')}>next</div>
