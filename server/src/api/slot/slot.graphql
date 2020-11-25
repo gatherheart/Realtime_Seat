@@ -14,7 +14,6 @@ type Slot {
 }
 
 type SlotChanges {
-  success: Boolean
   numbers: [String]
   status: SlotStatus
 }
@@ -25,8 +24,8 @@ type Query {
 }
 
 type Mutation {
-  updateSlot(bizItemId: String!, slotMapId: String!, number: String!, status: SlotStatus!): [Slot]!
-  bookSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!): [Slot]!
+  updateSlot(bizItemId: String!, slotMapId: String!, number: String!, status: SlotStatus!): SlotChanges!
+  bookSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!): SlotChanges!
 }
 
 type Subscription {

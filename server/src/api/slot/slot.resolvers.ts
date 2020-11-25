@@ -24,10 +24,9 @@ const resolvers = {
       { pubsub }: IContext,
     ) => {
       const channel = bizItemId + slotMapId
-      let slots: ISlot[] = []
-      slots = await updateSlotOne({ bizItemId, slotMapId, number, status })
-      pubsub.publish(channel, { slots: { success: true, numbers: [number], status } })
-      return slots
+      const slotChanges = await updateSlotOne({ bizItemId, slotMapId, number, status })
+      pubsub.publish(channel, { slots: { numbers: [number], status } })
+      return slotChanges
     },
     bookSlots: async (
       _: unknown,
@@ -35,10 +34,9 @@ const resolvers = {
       { pubsub }: IContext,
     ) => {
       const channel = bizItemId + slotMapId
-      let slots: ISlot[] = []
-      slots = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
+      const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
       pubsub.publish(channel, { slots: { numbers, status: SlotStatus.SOLD } })
-      return slots
+      return slotChanges
     },
   },
   Subscription: {

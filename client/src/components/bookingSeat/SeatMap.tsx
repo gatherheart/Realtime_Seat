@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import Seat from './Seat'
 import { ISlot, SlotStatus } from '../../interface'
@@ -42,9 +42,8 @@ const SLOTS_SUBSCRIPTION = gql`
 const SLOT_MUTATION = gql`
   mutation OccupySeat($bizItemId: String!, $slotMapId: String!, $number: String!, $status: SlotStatus!) {
     updateSlot(bizItemId: $bizItemId, slotMapId: $slotMapId, number: $number, status: $status) {
-      slotMapId
+      numbers
       status
-      number
     }
   }
 `
@@ -65,12 +64,14 @@ export default function SeatMap(): JSX.Element {
   const slotMap: { [key: string]: SlotStatus } | undefined = slots?.reduce(
     (map, slot) => ({
       ...map,
-      [slot.number]: slot.status || SlotStatus.FREE,
+      [slot.number]: slot.status,
     }),
     {},
   )
-
-  const [slotStates, setSlotStates] = useState(slotMap || {})
+  const [slotStates, setSlotStates] = useState(slotMap)
+  useEffect(() => {
+    if (!slotStates && slotMap) setSlotStates(slotMap)
+  }, [slotMap])
 
   useEffect(() => {
     if (slotChanges) {
@@ -87,6 +88,7 @@ export default function SeatMap(): JSX.Element {
       <div>
         {/* to-do: use Canvas & svg considering the order & position */}
         {slotMap &&
+          slotStates &&
           Object.keys(slotMap).map((number) => {
             return (
               <Seat
