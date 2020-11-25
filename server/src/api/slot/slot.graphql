@@ -13,12 +13,22 @@ type Slot {
   typeName: String
 }
 
+type SlotChanges {
+  success: Boolean
+  numbers: [String]
+  status: SlotStatus
+}
+
 type Query {
   slot(bizItemId: String!, slotMapId: String!, number: String!): Slot!
   slots(bizItemId: String!, slotMapId: String!): [Slot]!
 }
 
 type Mutation {
-  updateSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!, status: SlotStatus!): [Slot]!
-  syncSlots(bizItemId: String!, slotMapId: String!): [Slot]!
+  updateSlot(bizItemId: String!, slotMapId: String!, number: String!, status: SlotStatus!): [Slot]!
+  bookSlots(bizItemId: String!, slotMapId: String!, numbers: [String]!): [Slot]!
+}
+
+type Subscription {
+  slots(bizItemId: String!, slotMapId: String!): SlotChanges!
 }

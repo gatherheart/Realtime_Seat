@@ -1,12 +1,12 @@
+import * as mongodb from 'mongodb'
 import BizItem from '@db/bizItem/bizItem.model'
 import { IBizItem } from '@interface/bizItem/bizItem.interface'
 import { startSession, Types } from 'mongoose'
 import { getSlotInfo } from '@util/api'
 import { SlotStatus } from '@interface/slot/slot.interface'
-import { createManySlots } from '../slot/slot.controller'
+import { createManySlots } from '@controller/slot/slot.controller'
 import { ISlotD } from '@db/slot/slot.model'
 import slotMapModel from '@db/slotMap/slotMap.model'
-import * as mongodb from 'mongodb'
 
 interface syncSlotsArgs {
   businessId: string
