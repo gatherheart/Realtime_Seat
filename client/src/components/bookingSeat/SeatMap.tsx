@@ -8,7 +8,7 @@ const BIZITEM_ID = '3626905'
 const SLOTMAP_ID = '192575960'
 
 interface SlotChanges {
-  numbers: string[]
+  slots: ISlot[]
   status: SlotStatus
 }
 
@@ -33,7 +33,9 @@ const SLOTS_QUERY = gql`
 const SLOTS_SUBSCRIPTION = gql`
   subscription OnSlotStateChanges($bizItemId: String!, $slotMapId: String!) {
     slots(bizItemId: $bizItemId, slotMapId: $slotMapId) {
-      numbers
+      slots {
+        number
+      }
       status
     }
   }
@@ -42,7 +44,9 @@ const SLOTS_SUBSCRIPTION = gql`
 const SLOT_MUTATION = gql`
   mutation OccupySeat($bizItemId: String!, $slotMapId: String!, $number: String!, $status: SlotStatus!) {
     updateSlot(bizItemId: $bizItemId, slotMapId: $slotMapId, number: $number, status: $status) {
-      numbers
+      slots {
+        number
+      }
       status
     }
   }
@@ -75,8 +79,11 @@ export default function SeatMap(): JSX.Element {
 
   useEffect(() => {
     if (slotChanges) {
-      const { numbers, status } = slotChanges
-      const changes: { [key: string]: SlotStatus } = numbers.reduce((map, number) => ({ ...map, [number]: status }), {})
+      const { slots, status } = slotChanges
+      const changes: { [key: string]: SlotStatus } = slots.reduce(
+        (map, slot) => ({ ...map, [slot.number]: status }),
+        {},
+      )
 
       setSlotStates((slotStates) => ({ ...slotStates, ...changes }))
     }

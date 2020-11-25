@@ -14,7 +14,7 @@ type Slot {
 }
 
 type SlotChanges {
-  numbers: [String]
+  slots: [Slot]!
   status: SlotStatus
 }
 

@@ -31,7 +31,7 @@ interface UpdateSlotManyArgs {
 }
 
 interface SlotChanges {
-  numbers: string[]
+  slots: ISlot[]
   status: SlotStatus
 }
 
@@ -75,7 +75,7 @@ async function updateSlotOne({ bizItemId, slotMapId, number, status }: UpdateSlo
         break
     }
     await foundSlot.updateOne({ status })
-    return { numbers: [number], status }
+    return { slots: [foundSlot], status }
   } catch (err) {
     throw new Error(err)
   }
@@ -97,7 +97,7 @@ async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: Update
         break
     }
     await slotModel.updateMany({ bizItemId, slotMapId, number: { $in: numbers } }, { $set: { status } })
-    return { numbers, status }
+    return { slots: foundSlots, status }
   } catch (err) {
     throw new Error(err)
   }

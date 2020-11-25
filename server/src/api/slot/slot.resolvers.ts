@@ -1,6 +1,6 @@
 import { getSlots, getSlot, updateSlotOne, updateSlotsMany } from '@controller/slot/slot.controller'
 import { IContext } from '@interface/graphql.interface'
-import { ISlot, SlotStatus } from '@interface/slot/slot.interface'
+import { SlotStatus } from '@interface/slot/slot.interface'
 
 const resolvers = {
   Query: {
@@ -25,7 +25,7 @@ const resolvers = {
     ) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotOne({ bizItemId, slotMapId, number, status })
-      pubsub.publish(channel, { slots: { numbers: [number], status } })
+      pubsub.publish(channel, { slots: { slots: slotChanges.slots, status } })
       return slotChanges
     },
     bookSlots: async (
@@ -35,7 +35,7 @@ const resolvers = {
     ) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
-      pubsub.publish(channel, { slots: { numbers, status: SlotStatus.SOLD } })
+      pubsub.publish(channel, { slots: { slots: slotChanges.slots, status: SlotStatus.SOLD } })
       return slotChanges
     },
   },
