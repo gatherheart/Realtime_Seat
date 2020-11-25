@@ -49,10 +49,10 @@ export default function SeatMap(): JSX.Element {
   useEffect(() => {
     if (slotChanges) {
       const { numbers, status } = slotChanges
-      const changes: { [key: string]: SlotStatus } = {}
-      numbers.forEach((number) => {
-        changes[number] = status
-      })
+      const changes: { [key: string]: SlotStatus } = numbers.reduce(
+        (obj, number) => ({ ...obj, [changes[number]]: status }),
+        {},
+      )
       setSlotStates((slotStates) => ({ ...slotStates, ...changes }))
     }
   }, [slotChanges])
