@@ -3,7 +3,7 @@ import React from 'react'
 import { SlotStatus } from '../../interface'
 
 interface IProps {
-  status?: SlotStatus
+  status: SlotStatus
   number?: string
   onPress: (arg1: string) => void
 }
