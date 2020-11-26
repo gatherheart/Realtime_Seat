@@ -86,5 +86,5 @@ export interface IState {
   extraDesc?: IExtraDesc[]
   address?: IAddress
   performanceTimes?: IPerformanceTime[]
-  seats?: { [slotId: string]: ISlot }
+  seats?: Set<string>
 }

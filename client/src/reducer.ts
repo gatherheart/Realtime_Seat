@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions'
 
-import { IState, ISlot } from './interface'
+import { IState } from './interface'
 import bookingNaver from './assets/booking-naver.png'
 
 const initialState: IState = {
@@ -10,24 +10,21 @@ const initialState: IState = {
   extraDesc: [],
   address: {},
   performanceTimes: [],
-  seats: {},
+  seats: new Set<string>(),
 }
 
 // Action Types
 const SET_STATE = 'realtime-seat/SET_STATE'
-const ADD_SEAT = 'realtime-seat/PUSH_SEAT'
-const REMOVE_SEAT = 'realtime-seat/REMOVE_SEAT'
+const TOGGLE_SEAT = 'realtime-seat/TOGGLE_SEAT'
 
 // Action Creators
 export const actions = {
   setState: createAction<IState>(SET_STATE),
-  addSeat: createAction<ISlot>(ADD_SEAT),
-  removeSeat: createAction<string>(REMOVE_SEAT),
+  toggleSeat: createAction<string>(TOGGLE_SEAT),
 }
 
 type SetStateAction = ReturnType<typeof actions.setState>
-type AddSeatAction = ReturnType<typeof actions.addSeat>
-type RemoveSeatAction = ReturnType<typeof actions.removeSeat>
+type ToggleSeatAction = ReturnType<typeof actions.toggleSeat>
 
 // Reducer
 // eslint-disable-next-line
@@ -37,15 +34,8 @@ export default handleActions<IState, any>(
       ...prevState,
       ...payload,
     }),
-    [ADD_SEAT]: (prevState, { payload }: AddSeatAction) => ({
-      ...prevState,
-      seats: {
-        ...prevState.seats,
-        [payload.number]: payload,
-      },
-    }),
-    [REMOVE_SEAT]: (prevState, { payload }: RemoveSeatAction) => {
-      delete prevState.seats?.[payload]
+    [TOGGLE_SEAT]: (prevState, { payload }: ToggleSeatAction) => {
+      prevState.seats?.has(payload) ? prevState.seats?.delete(payload) : prevState.seats?.add(payload)
       return prevState
     },
   },

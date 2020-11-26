@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 import Seat from './Seat'
+import { actions } from '../../reducer'
 import { ISlot, SlotStatus, ISlotChanges } from '../../interface'
 
 interface SlotChangeArgs {
@@ -47,6 +49,7 @@ const SLOT_MUTATION = gql`
 
 export default function SeatMap() {
   const variables = useParams<{ bizItemId: string; slotMapId: string }>()
+  const dispatch = useDispatch()
 
   const { data: { slots } = {} } = useQuery<{ slots: ISlot[] | null }>(SLOTS_QUERY, { variables })
   const { data: { slots: slotChanges } = {}, loading, error } = useSubscription<{ slots: ISlotChanges | null }>(
@@ -95,6 +98,7 @@ export default function SeatMap() {
                   void updateSlot({
                     variables: { ...variables, status: SlotStatus.OCCUPIED, number },
                   })
+                  dispatch(actions.toggleSeat(number))
                 }}
               ></Seat>
             )
