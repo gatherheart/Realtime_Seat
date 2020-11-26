@@ -9,10 +9,8 @@ import SeatMap from '../components/bookingSeat/SeatMap'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    borderColor: theme.palette.primary.main,
-    borderWidth: 3,
-    borderStyle: 'solid',
     minWidth: 320,
+    backgroundColor: 'white',
   },
 }))
 
@@ -23,7 +21,7 @@ export default function BookingSeat() {
 
   return (
     <Container maxWidth="md" className={classes.container}>
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item md={9} sm={9} xs={12}>
           <SeatMap />
           <Seat />

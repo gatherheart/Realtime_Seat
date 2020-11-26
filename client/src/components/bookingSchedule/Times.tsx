@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
     fontSize: '1rem',
     justifyContent: 'center',
     backgroundColor: '#E0FED3',
+    margin: '0 0.5rem 0 0',
   },
 }))
 
@@ -38,6 +39,7 @@ export default function Times({ performanceTimes }: Props) {
 
   return (
     <>
+      <h3>회차선택</h3>
       <div>
         {performanceTimes.map(({ date, slotMapId }) => (
           <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>

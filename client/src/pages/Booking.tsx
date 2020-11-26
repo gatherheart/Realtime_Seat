@@ -26,12 +26,10 @@ const GET_BIZ_ITEM_DETAILS = gql`
   }
 `
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
-    borderColor: theme.palette.primary.main,
-    borderWidth: 3,
-    borderStyle: 'solid',
     minWidth: 320,
+    backgroundColor: 'white',
   },
 }))
 
