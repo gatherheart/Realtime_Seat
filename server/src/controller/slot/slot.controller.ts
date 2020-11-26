@@ -5,28 +5,33 @@ import slotMapModel from '@db/slotMap/slotMap.model'
 import slotModel from '@db/slot/slot.model'
 import { ISlotMap } from '@interface/slotMapId/slotMap.interface'
 
-interface getSlotsArgs {
+interface GetSlotsArgs {
   bizItemId: string
   slotMapId: string
 }
 
-interface getSlotArgs {
+interface GetSlotArgs {
   bizItemId: string
   slotMapId: string
   number: string
 }
 
-interface updateSlotOneArgs {
+interface UpdateSlotOneArgs {
   bizItemId: string
   slotMapId: string
   number: string
   status: SlotStatus
 }
 
-interface updateSlotManyArgs {
+interface UpdateSlotManyArgs {
   bizItemId: string
   slotMapId: string
   numbers: string[]
+  status: SlotStatus
+}
+
+interface SlotChanges {
+  slots: ISlot[]
   status: SlotStatus
 }
 
@@ -37,7 +42,7 @@ async function createManySlots(
   return Slot.create(slotInfos, { session })
 }
 
-async function getSlot({ bizItemId, slotMapId, number }: getSlotArgs) {
+async function getSlot({ bizItemId, slotMapId, number }: GetSlotArgs) {
   try {
     return await slotModel.findOne({ bizItemId, slotMapId, number })
   } catch (err) {
@@ -45,7 +50,7 @@ async function getSlot({ bizItemId, slotMapId, number }: getSlotArgs) {
   }
 }
 
-async function getSlots({ bizItemId, slotMapId }: getSlotsArgs): Promise<ISlot[]> {
+async function getSlots({ bizItemId, slotMapId }: GetSlotsArgs): Promise<ISlot[]> {
   try {
     const field = { bizItemId, slotMapId }
     const slotMap: ISlotMap = await slotMapModel.findOne(field).populate('slots')
@@ -55,7 +60,7 @@ async function getSlots({ bizItemId, slotMapId }: getSlotsArgs): Promise<ISlot[]
   }
 }
 
-async function updateSlotOne({ bizItemId, slotMapId, number, status }: updateSlotOneArgs) {
+async function updateSlotOne({ bizItemId, slotMapId, number, status }: UpdateSlotOneArgs): Promise<SlotChanges> {
   try {
     const foundSlot = await slotModel.findOne({ bizItemId, slotMapId, number })
     switch (status) {
@@ -70,14 +75,13 @@ async function updateSlotOne({ bizItemId, slotMapId, number, status }: updateSlo
         break
     }
     await foundSlot.updateOne({ status })
-    const slots = await getSlots({ bizItemId, slotMapId })
-    return slots
+    return { slots: [foundSlot], status }
   } catch (err) {
     throw new Error(err)
   }
 }
 
-async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: updateSlotManyArgs) {
+async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: UpdateSlotManyArgs): Promise<SlotChanges> {
   try {
     const foundSlots = await slotModel.find({ bizItemId, slotMapId, number: { $in: numbers } })
     const foundStatuses: SlotStatus[] = foundSlots.map((slot) => slot.status)
@@ -93,8 +97,7 @@ async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: update
         break
     }
     await slotModel.updateMany({ bizItemId, slotMapId, number: { $in: numbers } }, { $set: { status } })
-    const slots = await getSlots({ bizItemId, slotMapId })
-    return slots
+    return { slots: foundSlots, status }
   } catch (err) {
     throw new Error(err)
   }

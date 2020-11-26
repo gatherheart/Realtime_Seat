@@ -24,7 +24,6 @@ export default function BookingSeat() {
       <Grid container spacing={2}>
         <Grid item md={9} sm={9} xs={12}>
           <SeatMap />
-          <Seat />
           <SeatDetails {...params} />
         </Grid>
         <Grid item md={3} sm={3} xs={12}>
