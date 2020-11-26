@@ -61,6 +61,11 @@ export interface ISlot {
   typeName: string
 }
 
+export interface ISlotChanges {
+  slots: ISlot[]
+  status: SlotStatus
+}
+
 // un-used
 export interface ISlotMap {
   bizItemId: string
