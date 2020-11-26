@@ -12,3 +12,9 @@ export interface ISlot {
   status: SlotStatus
   typeName: string
 }
+
+export interface SlotChanges {
+  slots: ISlot[]
+  status: SlotStatus
+  success: boolean
+}

@@ -14,6 +14,7 @@ export const connect = (): void => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   database = Mongoose.connection
   database.once('open', () => {
