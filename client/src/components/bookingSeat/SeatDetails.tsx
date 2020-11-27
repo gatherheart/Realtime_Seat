@@ -61,7 +61,7 @@ export default function SeatDetails(variables: Props) {
       typeNameCounter[typeName][preStatus]--
       typeNameCounter[typeName][postStatus]++
     })
-    setTypeNameCounter(typeNameCounter)
+    setTypeNameCounter((state) => ({ ...state }))
   }, [slotChanges])
 
   return (
