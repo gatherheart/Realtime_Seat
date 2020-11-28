@@ -42,12 +42,13 @@ export default function SeatDetails(variables: Props) {
   const { data: { slots: initialSeats } = {} } = useQuery<{ slots: ISlot[] }, Props>(GET_SLOTS, {
     variables,
     onCompleted: () => {
-      const counter: ICounter = {}
-      initialSeats?.forEach(({ status, typeName }) =>
-        counter[typeName]
-          ? counter[typeName][status]++
-          : (counter[typeName] = { [SlotStatus.FREE]: 0, [SlotStatus.OCCUPIED]: 0, [status]: 1 }),
-      )
+      const counter =
+        initialSeats?.reduce((acc: ICounter, { status, typeName }) => {
+          typeName in acc
+            ? acc[typeName][status]++
+            : (acc[typeName] = { [SlotStatus.FREE]: 0, [SlotStatus.OCCUPIED]: 0, [status]: 1 })
+          return acc
+        }, {}) || {}
       setTypeNameCounter(counter)
     },
   })
@@ -57,11 +58,21 @@ export default function SeatDetails(variables: Props) {
   useEffect(() => {
     if (!slotChanges) return
     const { slots, status: postStatus } = slotChanges
-    slots?.forEach(({ typeName, status: preStatus }) => {
-      typeNameCounter[typeName][preStatus]--
-      typeNameCounter[typeName][postStatus]++
+    const counter = slots.reduce((acc: ICounter, { typeName, status: preStatus }) => {
+      const seatClass = typeName in acc ? { ...acc[typeName] } : { ...typeNameCounter[typeName] }
+      return {
+        ...acc,
+        [typeName]: {
+          ...seatClass,
+          [preStatus]: (seatClass[preStatus] as number) - 1,
+          [postStatus]: (seatClass[postStatus] as number) + 1,
+        },
+      }
+    }, {})
+    setTypeNameCounter({
+      ...typeNameCounter,
+      ...counter,
     })
-    setTypeNameCounter((state) => ({ ...state }))
   }, [slotChanges])
 
   return (
