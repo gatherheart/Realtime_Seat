@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, useRouteMatch, useParams } from 'react-router-dom'
+import { Switch, Route, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,18 +26,15 @@ const GET_BIZ_ITEM_DETAILS = gql`
   }
 `
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
-    borderColor: theme.palette.primary.main,
-    borderWidth: 3,
-    borderStyle: 'solid',
     minWidth: 320,
+    backgroundColor: 'white',
   },
 }))
 
 export default function Booking() {
   const dispatch = useDispatch()
-  const match = useRouteMatch()
   const classes = useStyles()
   const variables = useParams<{ bizItemId: string }>()
   const { data: { bizItemDetails } = {} } = useQuery<{ bizItemDetails: IBizItemDetails }, { bizItemId: string }>(
@@ -49,15 +46,7 @@ export default function Booking() {
         if (!bizItemDetails) return
         const { name, desc, extraDescJson, addressJson } = bizItemDetails
 
-        dispatch(
-          actions.setState({
-            id: variables.bizItemId,
-            name: name,
-            desc: desc,
-            extraDesc: extraDescJson,
-            address: addressJson,
-          }),
-        )
+        dispatch(actions.setState({ name, desc, extraDesc: extraDescJson, address: addressJson }))
       },
     },
   )
@@ -87,8 +76,8 @@ export default function Booking() {
   return (
     <Container maxWidth="md" className={classes.container}>
       <Switch>
-        <Route exact path={match.path} component={Performance} />
-        <Route path={`${match.path}/:bizItemId`} component={BookingSchedule} />
+        <Route exact path={'/booking/:bizItemId'} component={Performance} />
+        <Route path={'/booking/:bizItemId/schedule'} component={BookingSchedule} />
       </Switch>
       <PerformanceDetails />
     </Container>

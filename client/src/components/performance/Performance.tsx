@@ -10,7 +10,7 @@ export default function Performance() {
   const match = useRouteMatch()
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item md={6} sm={6} xs={12}>
         <Poster />
       </Grid>

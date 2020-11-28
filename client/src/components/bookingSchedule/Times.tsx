@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
-import TicketDetails from './TicketDetails'
+import SeatDetails from '../bookingSeat/SeatDetails'
 import { IPerformanceTime } from '../../interface'
 
 const useStyles = makeStyles(() => ({
@@ -14,6 +16,7 @@ const useStyles = makeStyles(() => ({
     fontSize: '1rem',
     justifyContent: 'center',
     backgroundColor: '#E0FED3',
+    margin: '0 0.5rem 0 0',
   },
 }))
 
@@ -22,8 +25,10 @@ interface Props {
 }
 
 export default function Times({ performanceTimes }: Props) {
+  const history = useHistory()
+  const { bizItemId } = useParams<{ bizItemId: string }>()
   const classes = useStyles()
-  const [currentId, setCurrentId] = useState('')
+  const [currentId, setCurrentId] = useState(performanceTimes[0].slotMapId)
 
   useEffect(() => {
     setCurrentId(performanceTimes[0].slotMapId)
@@ -32,16 +37,24 @@ export default function Times({ performanceTimes }: Props) {
   const handleClickTime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
     setCurrentId((e.target as HTMLDivElement).id)
 
-  const times = performanceTimes.map(({ date, slotMapId }) => (
-    <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>
-      {format(date, 'HH:mm', { locale: ko })}
-    </div>
-  ))
-
   return (
     <>
-      <div>{times}</div>
-      <TicketDetails slotMapId={currentId} />
+      <h3>회차선택</h3>
+      <div>
+        {performanceTimes.map(({ date, slotMapId }) => (
+          <div className={classes.time} key={slotMapId} id={slotMapId} onClick={handleClickTime}>
+            {format(date, 'HH:mm', { locale: ko })}
+          </div>
+        ))}
+      </div>
+      <SeatDetails bizItemId={bizItemId} slotMapId={currentId} />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => history.push(`/booking-seat/${bizItemId}/${currentId}`)}
+      >
+        다음단계
+      </Button>
     </>
   )
 }

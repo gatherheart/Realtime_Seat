@@ -15,8 +15,7 @@ const GET_BIZ_ITEMS = gql`
 export default function Home() {
   const history = useHistory()
   const { data: { bizItems } = {} } = useQuery<{ bizItems: IBizItem[] }>(GET_BIZ_ITEMS)
-  let bizItemId = ''
-  if (Array.isArray(bizItems)) bizItemId = bizItems[0].bizItemId
+  const bizItemId = bizItems?.[0].bizItemId || ''
 
   return <div onClick={() => history.push(`booking/${bizItemId}`)}>select performance</div>
 }

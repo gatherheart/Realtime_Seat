@@ -1,16 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
+import { useParams } from 'react-router-dom'
+
 import Seat from './Seat'
-import { ISlot, SlotStatus } from '../../interface'
-
-// DUMMY DATA - WILL BE REMOVED
-const BIZITEM_ID = '3626905'
-const SLOTMAP_ID = '192575960'
-
-interface SlotChanges {
-  slots: ISlot[]
-  status: SlotStatus
-}
+import { actions } from '../../reducer'
+import { ISlot, SlotStatus, ISlotChanges } from '../../interface'
 
 interface SlotChangeArgs {
   bizItemId: string
@@ -52,16 +47,14 @@ const SLOT_MUTATION = gql`
   }
 `
 
-export default function SeatMap(): JSX.Element {
-  // to-do: change variables dynamically
-  const { data: { slots } = {} } = useQuery<{ slots: ISlot[] | null }>(SLOTS_QUERY, {
-    variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID },
-  })
-  const { data: { slots: slotChanges } = {}, loading, error } = useSubscription<{ slots: SlotChanges | null }>(
+export default function SeatMap() {
+  const variables = useParams<{ bizItemId: string; slotMapId: string }>()
+  const dispatch = useDispatch()
+
+  const { data: { slots } = {} } = useQuery<{ slots: ISlot[] | null }>(SLOTS_QUERY, { variables })
+  const { data: { slots: slotChanges } = {}, loading, error } = useSubscription<{ slots: ISlotChanges | null }>(
     SLOTS_SUBSCRIPTION,
-    {
-      variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID },
-    },
+    { variables },
   )
   const [updateSlot, { data: updatedData }] = useMutation<{ updatedSlots: ISlot[] }, SlotChangeArgs>(SLOT_MUTATION)
 
@@ -103,8 +96,9 @@ export default function SeatMap(): JSX.Element {
                 number={number}
                 onPress={(number) => {
                   void updateSlot({
-                    variables: { bizItemId: BIZITEM_ID, slotMapId: SLOTMAP_ID, status: SlotStatus.OCCUPIED, number },
+                    variables: { ...variables, status: SlotStatus.OCCUPIED, number },
                   })
+                  dispatch(actions.toggleSeat(number))
                 }}
               ></Seat>
             )
