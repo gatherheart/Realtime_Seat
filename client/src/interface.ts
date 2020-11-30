@@ -66,6 +66,14 @@ export interface ISlotChanges {
   status: SlotStatus
 }
 
+export interface ISlotStatusObj {
+  [key: string]: SlotStatus
+}
+
+export interface ISlotObj {
+  [key: string]: ISlot
+}
+
 // un-used
 export interface ISlotMap {
   bizItemId: string

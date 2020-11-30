@@ -5,7 +5,7 @@ import { SlotStatus } from '../../interface'
 interface IProps {
   status: SlotStatus
   number?: string
-  onPress: (arg1: string) => void
+  onPress: (arg0: string) => void
 }
 
 export default React.memo((props: IProps) => {
