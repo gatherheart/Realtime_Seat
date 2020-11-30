@@ -1,6 +1,6 @@
 import { getSlots, getSlot, updateSlotOne, updateSlotsMany } from '@controller/slot/slot.controller'
 import { IContext } from '@interface/graphql.interface'
-import { SlotStatus } from '@interface/slot/slot.interface'
+import { SlotStatus, ISlotsInput } from '@interface/slot/slot.interface'
 
 const resolvers = {
   Query: {
@@ -28,14 +28,22 @@ const resolvers = {
       pubsub.publish(channel, { slots: { slots: slotChanges.slots, status } })
       return slotChanges
     },
-    bookSlots: async (
-      _: unknown,
-      { bizItemId, slotMapId, numbers }: { bizItemId: string; slotMapId: string; numbers: string[] },
-      { pubsub }: IContext,
-    ) => {
+    freeSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
+      const channel = bizItemId + slotMapId
+      const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.FREE })
+      pubsub.publish(channel, { slots: slotChanges })
+      return slotChanges
+    },
+    occupySlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
+      const channel = bizItemId + slotMapId
+      const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.OCCUPIED })
+      pubsub.publish(channel, { slots: slotChanges })
+      return slotChanges
+    },
+    bookSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
-      pubsub.publish(channel, { slots: { slots: slotChanges.slots, status: SlotStatus.SOLD } })
+      pubsub.publish(channel, { slots: slotChanges })
       return slotChanges
     },
   },
