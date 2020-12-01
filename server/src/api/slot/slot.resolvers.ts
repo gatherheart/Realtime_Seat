@@ -16,6 +16,7 @@ const resolvers = {
   },
 
   Mutation: {
+    // legacy api. will be removed after client update
     updateSlot: async (
       _: unknown,
       {
@@ -52,9 +53,9 @@ const resolvers = {
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.OCCUPIED })
       pubsub.publish(channel, { slots: slotChanges })
 
-      const timers = slotChanges.slots.reduce(
-        (accTimers, slot) => ({
-          ...accTimers,
+      occupiedToFreeTimers = slotChanges.slots.reduce(
+        (timer, slot) => ({
+          ...timer,
           [slot.number]: setTimeout(async () => {
             const { bizItemId: timerBizItemId, slotMapId: timerSlotMapId, number: timerNumber } = slot
             const timerChannel = timerBizItemId + timerSlotMapId
@@ -66,21 +67,24 @@ const resolvers = {
             }
             const slotChanges = await updateSlotsMany(args)
             pubsub.publish(timerChannel, { slots: slotChanges })
-          }, 10000),
+          }, 480000),
         }),
-        {},
+        occupiedToFreeTimers,
       )
-
-      occupiedToFreeTimers = {
-        ...occupiedToFreeTimers,
-        ...timers,
-      }
       return slotChanges
     },
 
     bookSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
+
+      if (slotChanges.success) {
+        slotChanges.slots.forEach(({ number }) => {
+          clearTimeout(occupiedToFreeTimers[number])
+          delete clearTimeout[number]
+        })
+      }
+
       pubsub.publish(channel, { slots: slotChanges })
       return slotChanges
     },
