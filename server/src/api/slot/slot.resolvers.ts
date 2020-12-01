@@ -14,6 +14,7 @@ const resolvers = {
       return slots
     },
   },
+
   Mutation: {
     updateSlot: async (
       _: unknown,
@@ -30,12 +31,22 @@ const resolvers = {
       pubsub.publish(channel, { slots: { slots: slotChanges.slots, status } })
       return slotChanges
     },
+
     freeSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.FREE })
+
+      if (slotChanges.success) {
+        slotChanges.slots.forEach(({ number }) => {
+          clearTimeout(occupiedToFreeTimers[number])
+          delete occupiedToFreeTimers[number]
+        })
+      }
+
       pubsub.publish(channel, { slots: slotChanges })
       return slotChanges
     },
+
     occupySlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.OCCUPIED })
@@ -59,12 +70,14 @@ const resolvers = {
         }),
         {},
       )
+
       occupiedToFreeTimers = {
         ...occupiedToFreeTimers,
         ...timers,
       }
       return slotChanges
     },
+
     bookSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.SOLD })
@@ -72,6 +85,7 @@ const resolvers = {
       return slotChanges
     },
   },
+
   Subscription: {
     slots: {
       subscribe: (
