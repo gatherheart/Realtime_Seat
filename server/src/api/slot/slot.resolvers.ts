@@ -2,6 +2,8 @@ import { getSlots, getSlot, updateSlotOne, updateSlotsMany } from '@controller/s
 import { IContext } from '@interface/graphql.interface'
 import { SlotStatus, ISlotsInput } from '@interface/slot/slot.interface'
 
+let occupiedToFreeTimers = {}
+
 const resolvers = {
   Query: {
     slot: (_: unknown, { bizItemId, slotMapId, number }) => {
@@ -38,6 +40,29 @@ const resolvers = {
       const channel = bizItemId + slotMapId
       const slotChanges = await updateSlotsMany({ bizItemId, slotMapId, numbers, status: SlotStatus.OCCUPIED })
       pubsub.publish(channel, { slots: slotChanges })
+
+      const timers = slotChanges.slots.reduce(
+        (accTimers, slot) => ({
+          ...accTimers,
+          [slot.number]: setTimeout(async () => {
+            const { bizItemId: timerBizItemId, slotMapId: timerSlotMapId, number: timerNumber } = slot
+            const timerChannel = timerBizItemId + timerSlotMapId
+            const args = {
+              bizItemId: slot.bizItemId,
+              slotMapId: slot.slotMapId,
+              numbers: [timerNumber],
+              status: SlotStatus.FREE,
+            }
+            const slotChanges = await updateSlotsMany(args)
+            pubsub.publish(timerChannel, { slots: slotChanges })
+          }, 10000),
+        }),
+        {},
+      )
+      occupiedToFreeTimers = {
+        ...occupiedToFreeTimers,
+        ...timers,
+      }
       return slotChanges
     },
     bookSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub }: IContext) => {
