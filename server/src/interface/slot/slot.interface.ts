@@ -13,6 +13,12 @@ export interface ISlot {
   typeName: string
 }
 
+export interface ISlotsInput {
+  bizItemId: string
+  slotMapId: string
+  numbers: string[]
+}
+
 export interface SlotChanges {
   slots: ISlot[]
   status: SlotStatus

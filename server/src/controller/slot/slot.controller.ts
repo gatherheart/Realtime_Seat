@@ -67,21 +67,27 @@ async function updateSlotOne({ bizItemId, slotMapId, number, status }: UpdateSlo
 }
 
 async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: UpdateSlotManyArgs): Promise<SlotChanges> {
-  const foundSlots = await slotModel.find({ bizItemId, slotMapId, number: { $in: numbers } })
-  const foundStatuses: SlotStatus[] = foundSlots.map((slot) => slot.status)
-  switch (status) {
-    case SlotStatus.OCCUPIED:
-      if (!foundStatuses.includes(SlotStatus.FREE)) return { slots: [], status, success: false }
-      break
-    // to-do: check user session ID to check who has made this occupation
-    case SlotStatus.SOLD:
-      if (!foundStatuses.includes(SlotStatus.OCCUPIED)) return { slots: [], status, success: false }
-      break
-    default:
-      break
+  try {
+    const foundSlots = await slotModel.find({ bizItemId, slotMapId, number: { $in: numbers } })
+    const foundStatuses: SlotStatus[] = foundSlots.map((slot) => slot.status)
+    switch (status) {
+      case SlotStatus.FREE:
+        if (foundStatuses.includes(SlotStatus.FREE)) throw Error()
+        break
+      case SlotStatus.OCCUPIED:
+        if (!foundStatuses.includes(SlotStatus.FREE)) throw Error()
+        break
+      case SlotStatus.SOLD:
+        if (!foundStatuses.includes(SlotStatus.OCCUPIED)) throw Error()
+        break
+      default:
+        break
+    }
+    await slotModel.updateMany({ bizItemId, slotMapId, number: { $in: numbers } }, { $set: { status } })
+    return { slots: foundSlots, status, success: true }
+  } catch (err) {
+    return { slots: [], status, success: false }
   }
-  await slotModel.updateMany({ bizItemId, slotMapId, number: { $in: numbers } }, { $set: { status } })
-  return { slots: foundSlots, status, success: true }
 }
 
 export { createManySlots, getSlots, getSlot, updateSlotOne, updateSlotsMany }
