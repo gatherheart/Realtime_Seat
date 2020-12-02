@@ -11,7 +11,7 @@ const resolvers = {
         aud: 'guest' + guestId,
       }
       guestId += 1
-      return sign(payload, JWT_SECRET)
+      return sign(payload, JWT_SECRET, { expiresIn: '1h' })
     },
   },
 }
