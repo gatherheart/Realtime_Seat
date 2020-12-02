@@ -3,6 +3,9 @@ import { ISlot, ISlotObj, ISlotStatusObj, SlotStatus } from '../../interface'
 import { Layer, Rect, Stage, Image } from 'react-konva'
 import { KonvaEventObject } from 'konva/types/Node'
 import { gql, useMutation } from '@apollo/client'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { actions } from '../../reducer'
 
 interface CanvasProps {
   slotStates: ISlotStatusObj
@@ -16,19 +19,28 @@ interface SeatProps {
   scaleX: number
   scaleY: number
   status: SlotStatus
-  onPress: (arg0: string) => void
+  onPress: (arg0: string[]) => void
 }
 
 interface SlotChangeArgs {
   bizItemId: string
   slotMapId: string
-  number: string
-  status: SlotStatus
+  numbers: string[]
 }
 
-const SLOT_MUTATION = gql`
-  mutation OccupySeat($bizItemId: String!, $slotMapId: String!, $number: String!, $status: SlotStatus!) {
-    updateSlot(bizItemId: $bizItemId, slotMapId: $slotMapId, number: $number, status: $status) {
+const OCCUPY_SEATS = gql`
+  mutation OccupySeats($bizItemId: String!, $slotMapId: String!, $numbers: [String]!) {
+    occupySlots(bizItemId: $bizItemId, slotMapId: $slotMapId, numbers: $numbers) {
+      slots {
+        number
+      }
+      status
+    }
+  }
+`
+const FREE_SEATS = gql`
+  mutation FreeSeats($bizItemId: String!, $slotMapId: String!, $numbers: [String]!) {
+    freeSlots(bizItemId: $bizItemId, slotMapId: $slotMapId, numbers: $numbers) {
       slots {
         number
       }
@@ -39,6 +51,8 @@ const SLOT_MUTATION = gql`
 
 const CANVAS_SIZE = 657
 const SCALE_BY_VALUE = 1.02
+const MAX_SCALE_VALUE = 2
+const MIN_SCALE_VALUE = 1
 const background = 'https://naverbooking-phinf.pstatic.net/20201007_220/1602053055804OStiU_PNG/image.png'
 
 const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMapId }: CanvasProps): ReactElement => {
@@ -48,14 +62,30 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
     stageY: 0,
     scale: 1,
   })
-  const [updateSlot, { data: updatedData }] = useMutation<{ updatedSlots: ISlot[] }, SlotChangeArgs>(SLOT_MUTATION)
+  const [occupySeats, { data: occupiedSeats }] = useMutation<{ occupiedSeats: ISlot[] }, SlotChangeArgs>(OCCUPY_SEATS)
+  const [freeSeats, { data: freedSeats }] = useMutation<{ freedSeats: ISlot[] }, SlotChangeArgs>(FREE_SEATS)
 
-  const handleSelectedSeat = (number: string) => {
-    switch (slotMap[number].status) {
+  const img = new window.Image()
+  img.src = background
+  const history = useHistory()
+  const dispatch = useDispatch()
+
+  const handleSelectedSeat = (numbers: string[]) => {
+    // check all seats have to have same status
+    if (!numbers.reduce((prev, curr) => prev && curr === numbers[0], true)) return
+
+    switch (slotStates[numbers[0]]) {
       case SlotStatus.FREE:
-        void updateSlot({
-          variables: { bizItemId, slotMapId, status: SlotStatus.OCCUPIED, number },
+        void occupySeats({
+          variables: { bizItemId, slotMapId, numbers },
         })
+        dispatch(actions.toggleSeats(numbers))
+        break
+      case SlotStatus.OCCUPIED:
+        void freeSeats({
+          variables: { bizItemId, slotMapId, numbers },
+        })
+        dispatch(actions.toggleSeats(numbers))
         break
       default:
         break
@@ -75,7 +105,8 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
         y: position.y / oldScale - stage.y() / oldScale,
       }
 
-      const newScale = event.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy
+      let newScale = event.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy
+      newScale = newScale > MAX_SCALE_VALUE ? MAX_SCALE_VALUE : newScale < MIN_SCALE_VALUE ? MIN_SCALE_VALUE : newScale
       setStageScale({
         stageX: -(mousePointTo.x - position.x / newScale) * newScale,
         stageY: -(mousePointTo.y - position.y / newScale) * newScale,
@@ -83,8 +114,6 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
       })
     }
   }, [])
-  const img = new window.Image()
-  img.src = background
 
   useEffect(() => {
     const scaleOnload: { x: number; y: number } = { x: 0, y: 0 }
@@ -93,6 +122,17 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
       scaleOnload.x = CANVAS_SIZE / img.width
       scaleOnload.y = CANVAS_SIZE / img.height
       setSeatScale(scaleOnload)
+    }
+
+    const backListener = history.listen((location, action) => {
+      if (action === 'POP') {
+        // to-do: all the occupied seats will be freed
+        console.log('POPED')
+      }
+    })
+
+    return () => {
+      backListener()
     }
   }, [])
 
@@ -154,7 +194,7 @@ const Seat: React.FC<SeatProps> = React.memo(
         rotation={view[4]}
         offsetX={(view[2] * scaleX) / 2}
         offsetY={(view[3] * scaleY) / 2}
-        onClick={() => onPress(slot.number)}
+        onClick={() => onPress([slot.number])}
       ></Rect>
     )
   },

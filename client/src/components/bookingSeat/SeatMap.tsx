@@ -67,7 +67,6 @@ export default function SeatMap() {
     <div>
       <span>SeatMap</span>
       <div>
-        {/* to-do: use Canvas & svg considering the order & position */}
         {slotMap ? (
           <Canvas
             slotStates={slotStates || ({} as ISlotStatusObj)}
