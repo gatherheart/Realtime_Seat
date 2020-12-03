@@ -28,6 +28,7 @@ interface UpdateSlotManyArgs {
   slotMapId: string
   numbers: string[]
   status: SlotStatus
+  verified?: boolean
 }
 
 async function createManySlots(
@@ -66,19 +67,27 @@ async function updateSlotOne({ bizItemId, slotMapId, number, status }: UpdateSlo
   return { slots: [foundSlot], status, success: true }
 }
 
-async function updateSlotsMany({ bizItemId, slotMapId, numbers, status }: UpdateSlotManyArgs): Promise<SlotChanges> {
+async function updateSlotsMany({
+  bizItemId,
+  slotMapId,
+  numbers,
+  status,
+  verified = true,
+}: UpdateSlotManyArgs): Promise<SlotChanges> {
   try {
+    if (!verified) throw new Error()
+    if (!numbers.length) throw new Error()
     const foundSlots = await slotModel.find({ bizItemId, slotMapId, number: { $in: numbers } })
     const foundStatuses: SlotStatus[] = foundSlots.map((slot) => slot.status)
     switch (status) {
       case SlotStatus.FREE:
-        if (foundStatuses.includes(SlotStatus.FREE)) throw Error()
+        if (foundStatuses.includes(SlotStatus.FREE)) throw new Error()
         break
       case SlotStatus.OCCUPIED:
-        if (!foundStatuses.includes(SlotStatus.FREE)) throw Error()
+        if (!foundStatuses.includes(SlotStatus.FREE)) throw new Error()
         break
       case SlotStatus.SOLD:
-        if (!foundStatuses.includes(SlotStatus.OCCUPIED)) throw Error()
+        if (!foundStatuses.includes(SlotStatus.OCCUPIED)) throw new Error()
         break
       default:
         break

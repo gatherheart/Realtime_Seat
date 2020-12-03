@@ -12,6 +12,7 @@ type Query {
   sample2(slotId: String!): Slot!
   slot(bizItemId: String!, slotMapId: String!, number: String!): Slot!
   slots(bizItemId: String!, slotMapId: String!): [Slot]!
+  token: String!
 }
 
 type Mutation {
