@@ -1,10 +1,10 @@
 import React, { ReactElement, useCallback, useEffect, useState } from 'react'
-import { ISlot, ISlotObj, ISlotStatusObj, SlotStatus } from '../../interface'
+import { ISlot, ISlotObj, ISlotStatusObj, IState, SlotStatus } from '../../interface'
 import { Layer, Rect, Stage, Image } from 'react-konva'
 import { KonvaEventObject } from 'konva/types/Node'
 import { gql, useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { actions } from '../../reducer'
 
 interface CanvasProps {
@@ -69,23 +69,25 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
   img.src = background
   const history = useHistory()
   const dispatch = useDispatch()
+  const { seats: seatsInStore } = useSelector((state: IState) => state)
 
   const handleSelectedSeat = (numbers: string[]) => {
     // check all seats have to have same status
-    if (!numbers.reduce((prev, curr) => prev && curr === numbers[0], true)) return
+    if (!numbers.reduce((prev, curr) => prev && slotStates[curr] === slotStates[numbers[0]], true)) return
 
     switch (slotStates[numbers[0]]) {
       case SlotStatus.FREE:
         void occupySeats({
           variables: { bizItemId, slotMapId, numbers },
         })
-        dispatch(actions.toggleSeats(numbers))
+        dispatch(actions.occupySeats(numbers))
         break
       case SlotStatus.OCCUPIED:
         void freeSeats({
           variables: { bizItemId, slotMapId, numbers },
         })
-        dispatch(actions.toggleSeats(numbers))
+        // to-do: check whether it is occupied by me
+        dispatch(actions.freeSeats(numbers))
         break
       default:
         break
@@ -115,6 +117,10 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
     }
   }, [])
 
+  const alertBeforeUnload = (ev: BeforeUnloadEvent) => {
+    return (ev.returnValue = ' ')
+  }
+
   useEffect(() => {
     const scaleOnload: { x: number; y: number } = { x: 0, y: 0 }
 
@@ -126,15 +132,16 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
 
     const backListener = history.listen((location, action) => {
       if (action === 'POP') {
-        // to-do: all the occupied seats will be freed
-        console.log('POPED')
+        handleSelectedSeat(Array.from(seatsInStore).filter((sn) => slotStates[sn] === SlotStatus.OCCUPIED))
       }
     })
+    window.addEventListener('beforeunload', alertBeforeUnload)
 
     return () => {
       backListener()
+      window.removeEventListener('beforeunload', alertBeforeUnload)
     }
-  }, [])
+  }, [slotMap])
 
   return (
     <Stage

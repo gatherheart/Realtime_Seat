@@ -1,6 +1,7 @@
 import { split, HttpLink, ApolloClient, InMemoryCache } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
+import { setContext } from '@apollo/client/link/context'
 
 const httpUri = process.env.REACT_APP_HTTP_URI || 'localhost'
 const httpPort = process.env.REACT_APP_HTTP_PORT || 4000
@@ -26,8 +27,17 @@ const link = split(
   wsLink,
   httpLink,
 )
+const authLink = setContext((_, { headers }: { headers: { authorization: string } }) => {
+  const token = localStorage.getItem('token')
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  }
+})
 
 export const client = new ApolloClient({
-  link,
+  link: authLink.concat(link),
   cache: new InMemoryCache(),
 })
