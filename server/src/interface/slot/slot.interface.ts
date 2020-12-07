@@ -11,6 +11,7 @@ export interface ISlot {
   view: string
   status: SlotStatus
   typeName: string
+  userName: string
 }
 
 export interface ISlotsInput {

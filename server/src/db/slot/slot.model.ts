@@ -10,6 +10,7 @@ export const SlotSchema: mongoose.Schema = new mongoose.Schema({
   view: { type: String, default: 'rect,0.0,0.0,10.0,10.0,0.0' },
   status: { type: String, enum: ['FREE', 'OCCUPIED', 'SOLD'], default: 'FREE', required: true },
   typeName: { type: String, required: true },
+  userName: { type: String },
 })
 
 SlotSchema.index({ bizItemId: 1, slotMapId: 1, number: 1 }, { unique: true })

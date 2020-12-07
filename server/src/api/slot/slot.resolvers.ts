@@ -1,4 +1,11 @@
-import { getSlots, getSlot, updateSlotOne, updateSlotsMany } from '@controller/slot/slot.controller'
+import {
+  getSlots,
+  getSlot,
+  updateSlotOne,
+  updateSlotsFree,
+  updateSlotsOccupied,
+  updateSlotsSold,
+} from '@controller/slot/slot.controller'
 import { IContext } from '@interface/graphql.interface'
 import { SlotStatus, ISlotsInput } from '@interface/slot/slot.interface'
 
@@ -27,98 +34,73 @@ const resolvers = {
       }: { bizItemId: string; slotMapId: string; number: string; status: SlotStatus },
       { pubsub }: IContext,
     ) => {
-      const channel = bizItemId + slotMapId
+      const channel = `${bizItemId}_${slotMapId}`
       const slotChanges = await updateSlotOne({ bizItemId, slotMapId, number, status })
       pubsub.publish(channel, { slots: { slots: slotChanges.slots, status } })
       return slotChanges
     },
 
-    freeSlots: async (
-      _: unknown,
-      { bizItemId, slotMapId, numbers }: ISlotsInput,
-      { pubsub, user, error }: IContext,
-    ) => {
-      const channel = bizItemId + slotMapId
-      const slotChanges = await updateSlotsMany({
+    freeSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub, user }: IContext) => {
+      const slotChanges = await updateSlotsFree({
         bizItemId,
         slotMapId,
-        numbers: numbers.filter((number) => occupiedToFreeTimers[number]?.uid === user.aud),
-        status: SlotStatus.FREE,
-        verified: !error,
+        numbers,
+        user,
       })
 
       if (slotChanges.success) {
+        const channel = `${bizItemId}_${slotMapId}`
         pubsub.publish(channel, { slots: slotChanges })
         slotChanges.slots.forEach(({ number }) => {
-          clearTimeout(occupiedToFreeTimers[number]?.timer)
-          delete occupiedToFreeTimers[number]
+          clearTimeout(occupiedToFreeTimers[channel][number])
+          delete occupiedToFreeTimers[channel][number]
         })
       }
 
       return slotChanges
     },
 
-    occupySlots: async (
-      _: unknown,
-      { bizItemId, slotMapId, numbers }: ISlotsInput,
-      { pubsub, user, error }: IContext,
-    ) => {
-      const channel = bizItemId + slotMapId
-      const slotChanges = await updateSlotsMany({
-        bizItemId,
-        slotMapId,
-        numbers,
-        status: SlotStatus.OCCUPIED,
-        verified: !error,
-      })
+    occupySlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub, user }: IContext) => {
+      const slotChanges = await updateSlotsOccupied({ bizItemId, slotMapId, numbers, user })
 
       if (slotChanges.success) {
+        const channel = `${bizItemId}_${slotMapId}`
         pubsub.publish(channel, { slots: slotChanges })
-        occupiedToFreeTimers = slotChanges.slots.reduce(
-          (timer, slot) => ({
-            ...timer,
-            [slot.number]: {
-              uid: user.aud,
-              timer: setTimeout(async () => {
-                const { bizItemId: timerBizItemId, slotMapId: timerSlotMapId, number: timerNumber } = slot
-                const timerChannel = timerBizItemId + timerSlotMapId
-                const args = {
-                  bizItemId: slot.bizItemId,
-                  slotMapId: slot.slotMapId,
-                  numbers: [timerNumber],
-                  status: SlotStatus.FREE,
-                }
-                const slotChanges = await updateSlotsMany(args)
-                pubsub.publish(timerChannel, { slots: slotChanges })
-              }, 480000),
-            },
+        occupiedToFreeTimers[channel] = slotChanges.slots.reduce(
+          (timers, { bizItemId, slotMapId, number }) => ({
+            ...timers,
+            [number]: setTimeout(async () => {
+              const timerChannel = `${bizItemId}_${slotMapId}`
+              const slotChanges = await updateSlotsFree({
+                bizItemId,
+                slotMapId,
+                numbers: [number],
+                user,
+              })
+              pubsub.publish(timerChannel, { slots: slotChanges })
+            }, 480000),
           }),
-          occupiedToFreeTimers,
+          occupiedToFreeTimers[channel] ?? {},
         )
       }
 
       return slotChanges
     },
 
-    bookSlots: async (
-      _: unknown,
-      { bizItemId, slotMapId, numbers }: ISlotsInput,
-      { pubsub, user, error }: IContext,
-    ) => {
-      const channel = bizItemId + slotMapId
-      const slotChanges = await updateSlotsMany({
+    bookSlots: async (_: unknown, { bizItemId, slotMapId, numbers }: ISlotsInput, { pubsub, user }: IContext) => {
+      const slotChanges = await updateSlotsSold({
         bizItemId,
         slotMapId,
-        numbers: numbers.filter((number) => occupiedToFreeTimers[number]?.uid === user.aud),
-        status: SlotStatus.SOLD,
-        verified: !error,
+        numbers,
+        user,
       })
 
       if (slotChanges.success) {
+        const channel = `${bizItemId}_${slotMapId}`
         pubsub.publish(channel, { slots: slotChanges })
         slotChanges.slots.forEach(({ number }) => {
-          clearTimeout(occupiedToFreeTimers[number]?.timer)
-          delete clearTimeout[number]
+          clearTimeout(occupiedToFreeTimers[channel][number])
+          delete clearTimeout[channel][number]
         })
       }
 
@@ -133,7 +115,7 @@ const resolvers = {
         { bizItemId, slotMapId }: { bizItemId: string; slotMapId: string },
         { pubsub }: IContext,
       ) => {
-        const channel = bizItemId + slotMapId
+        const channel = `${bizItemId}_${slotMapId}`
         return pubsub.asyncIterator(channel)
       },
     },
