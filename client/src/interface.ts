@@ -94,5 +94,5 @@ export interface IState {
   extraDesc?: IExtraDesc[]
   address?: IAddress
   performanceTimes?: IPerformanceTime[]
-  seats?: Set<string>
+  seats: string[]
 }
