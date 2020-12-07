@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { gql, useQuery } from '@apollo/client'
 
 import Home from './pages/Home'
 import Booking from './pages/Booking'
@@ -8,7 +9,19 @@ import Payment from './pages/Payment'
 
 import './App.css'
 
+const GET_TOKEN = gql`
+  query Token {
+    token
+  }
+`
+
 function App() {
+  const { data: { token } = {} } = useQuery<{ token: string }>(GET_TOKEN)
+
+  useEffect(() => {
+    if (token) localStorage.setItem('token', token)
+  }, [token])
+
   return (
     <BrowserRouter>
       <div className="App">
