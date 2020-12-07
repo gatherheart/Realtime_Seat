@@ -1,6 +1,7 @@
 import * as mongodb from 'mongodb'
 import Slot, { ISlotD } from '@db/slot/slot.model'
 import { ISlot, SlotStatus, SlotChanges } from '@interface/slot/slot.interface'
+import { JWTPayload } from '@interface/graphql.interface'
 import slotMapModel from '@db/slotMap/slotMap.model'
 import slotModel from '@db/slot/slot.model'
 import { ISlotMap } from '@interface/slotMapId/slotMap.interface'
@@ -29,6 +30,13 @@ interface UpdateSlotManyArgs {
   numbers: string[]
   status: SlotStatus
   verified?: boolean
+}
+
+interface UpdateSlotsArgs {
+  bizItemId: string
+  slotMapId: string
+  numbers: string[]
+  user: JWTPayload
 }
 
 async function createManySlots(
@@ -67,6 +75,72 @@ async function updateSlotOne({ bizItemId, slotMapId, number, status }: UpdateSlo
   return { slots: [foundSlot], status, success: true }
 }
 
+async function updateSlotsFree({ bizItemId, slotMapId, numbers, user }: UpdateSlotsArgs): Promise<SlotChanges> {
+  try {
+    if (!user) throw new Error()
+
+    const foundSlots = await slotModel.find({ bizItemId, slotMapId, number: { $in: numbers }, userName: user.aud })
+    if (!foundSlots.length || foundSlots.length !== numbers.length) throw new Error()
+
+    const isOccupied = foundSlots.every((slot) => slot.status === SlotStatus.OCCUPIED)
+    const isSold = foundSlots.every((slot) => slot.status === SlotStatus.SOLD)
+    if (isOccupied || isSold) {
+      await slotModel.updateMany(
+        { bizItemId, slotMapId, number: { $in: numbers } },
+        { $set: { status: SlotStatus.FREE, userName: null } },
+      )
+    } else {
+      throw new Error()
+    }
+
+    return { slots: foundSlots, status: SlotStatus.FREE, success: true }
+  } catch (err) {
+    return { slots: [], status: SlotStatus.FREE, success: false }
+  }
+}
+
+async function updateSlotsOccupied({ bizItemId, slotMapId, numbers, user }: UpdateSlotsArgs): Promise<SlotChanges> {
+  try {
+    if (!user) throw new Error()
+
+    const foundSlots = await slotModel.find({ bizItemId, slotMapId, status: SlotStatus.FREE, number: { $in: numbers } })
+    if (!foundSlots.length || foundSlots.length !== numbers.length) throw new Error()
+
+    await slotModel.updateMany(
+      { bizItemId, slotMapId, number: { $in: numbers } },
+      { $set: { status: SlotStatus.OCCUPIED, userName: user.aud } },
+    )
+
+    return { slots: foundSlots, status: SlotStatus.OCCUPIED, success: true }
+  } catch (err) {
+    return { slots: [], status: SlotStatus.OCCUPIED, success: false }
+  }
+}
+
+async function updateSlotsSold({ bizItemId, slotMapId, numbers, user }: UpdateSlotsArgs): Promise<SlotChanges> {
+  try {
+    if (!user) throw new Error()
+
+    const foundSlots = await slotModel.find({
+      bizItemId,
+      slotMapId,
+      status: SlotStatus.OCCUPIED,
+      number: { $in: numbers },
+      userName: user.aud,
+    })
+    if (!foundSlots.length || foundSlots.length !== numbers.length) throw new Error()
+
+    await slotModel.updateMany(
+      { bizItemId, slotMapId, number: { $in: numbers } },
+      { $set: { status: SlotStatus.SOLD } },
+    )
+
+    return { slots: foundSlots, status: SlotStatus.SOLD, success: true }
+  } catch (err) {
+    return { slots: [], status: SlotStatus.SOLD, success: false }
+  }
+}
+
 async function updateSlotsMany({
   bizItemId,
   slotMapId,
@@ -99,4 +173,13 @@ async function updateSlotsMany({
   }
 }
 
-export { createManySlots, getSlots, getSlot, updateSlotOne, updateSlotsMany }
+export {
+  createManySlots,
+  getSlots,
+  getSlot,
+  updateSlotOne,
+  updateSlotsMany,
+  updateSlotsFree,
+  updateSlotsOccupied,
+  updateSlotsSold,
+}

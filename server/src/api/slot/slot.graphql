@@ -11,6 +11,7 @@ type Slot {
   view: String
   status: SlotStatus
   typeName: String
+  userName: String
 }
 
 type SlotChanges {

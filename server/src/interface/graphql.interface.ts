@@ -1,14 +1,14 @@
 import { PubSub } from 'graphql-yoga'
 
-interface Payload {
-  sub: string
+export interface JWTPayload {
+  sub?: string
   aud: string
-  iat: number
-  exp: number
+  iat?: number
+  exp?: number
 }
 
 export interface IContext {
   pubsub: PubSub
-  user: Payload
+  user: JWTPayload
   error: Error
 }
