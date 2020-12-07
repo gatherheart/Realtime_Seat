@@ -78,7 +78,7 @@ const resolvers = {
                 user,
               })
               pubsub.publish(timerChannel, { slots: slotChanges })
-            }, 1000),
+            }, 480000),
           }),
           occupiedToFreeTimers[channel] ?? {},
         )
