@@ -40,14 +40,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@types/cors": "^2.8.8",
     "@types/graphql-type-json": "^0.3.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongodb": "^3.5.33",
     "@types/mongoose": "^5.10.0",
     "@types/morgan": "^1.9.2",
     "@types/redis": "^2.8.28",
-    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^1.18.3",
