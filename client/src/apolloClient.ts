@@ -3,10 +3,10 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { setContext } from '@apollo/client/link/context'
 
-const httpUri = process.env.REACT_APP_HTTP_URI || 'localhost'
-const httpPort = process.env.REACT_APP_HTTP_PORT || 4000
-const wsUri = process.env.REACT_APP_WS_URI || 'localhost'
-const wsPort = process.env.REACT_APP_WS_PORT || 4000
+export const httpUri = process.env.REACT_APP_HTTP_URI || 'localhost'
+export const httpPort = process.env.REACT_APP_HTTP_PORT || 4000
+export const wsUri = process.env.REACT_APP_WS_URI || 'localhost'
+export const wsPort = process.env.REACT_APP_WS_PORT || 4000
 
 const httpLink = new HttpLink({
   uri: `http://${httpUri}:${httpPort}`,

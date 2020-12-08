@@ -48,6 +48,10 @@ export default handleActions<IState, any>(
       for (const item of payload) !prevState.seats.includes(item) ? prevState.seats.push(item) : null
       return prevState
     },
+    [FREE_SEATS]: (prevState, { payload }: FreeSeatAction) => {
+      prevState.seats = prevState.seats.filter((sn) => !payload.includes(sn))
+      return prevState
+    },
   },
   initialState,
 )

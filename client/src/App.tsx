@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 
 import Home from './pages/Home'
 import Booking from './pages/Booking'
@@ -16,11 +16,12 @@ const GET_TOKEN = gql`
 `
 
 function App() {
-  const { data: { token } = {} } = useQuery<{ token: string }>(GET_TOKEN)
+  const [getToken, { loading, data }] = useLazyQuery<{ token: string }>(GET_TOKEN)
 
   useEffect(() => {
-    if (token) localStorage.setItem('token', token)
-  }, [token])
+    getToken()
+    if (data?.token) localStorage.setItem('token', data.token)
+  }, [data])
 
   return (
     <BrowserRouter>

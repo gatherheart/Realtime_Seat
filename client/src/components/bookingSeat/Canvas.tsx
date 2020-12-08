@@ -6,6 +6,7 @@ import { gql, useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { actions } from '../../reducer'
+import { httpPort, httpUri } from '../../apolloClient'
 
 interface CanvasProps {
   slotStates: ISlotStatusObj
@@ -94,6 +95,41 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
     }
   }
 
+  const handleSelectedSeatSync = (numbers: string[]) => {
+    // check all seats have to have same status
+    if (!numbers.reduce((prev, curr) => prev && slotStates[curr] === slotStates[numbers[0]], true)) return
+    const token: string | null = localStorage.getItem('token')
+
+    switch (slotStates[numbers[0]]) {
+      case SlotStatus.OCCUPIED:
+        void fetch(`http://${httpUri}:${httpPort}`, {
+          method: 'POST',
+          headers: new Headers({
+            Authorization: token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json',
+          }),
+
+          body: JSON.stringify({
+            query: `mutation FreeSeats($bizItemId: String!, $slotMapId: String!, $numbers: [String]!) {
+              freeSlots(bizItemId: $bizItemId, slotMapId: $slotMapId, numbers: $numbers) {
+                slots {
+                  number
+                }
+                status
+              }
+            }`,
+            variables: { bizItemId, slotMapId, numbers },
+          }),
+          keepalive: true,
+        }).then((res) => res.json())
+        // to-do: check whether it is occupied by me
+        dispatch(actions.freeSeats(numbers))
+        break
+      default:
+        break
+    }
+  }
+
   const handleWheel = useCallback((event: KonvaEventObject<WheelEvent>) => {
     event.evt.preventDefault()
     const scaleBy = SCALE_BY_VALUE
@@ -121,6 +157,12 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
     return (ev.returnValue = ' ')
   }
 
+  const alertAfterUnload = (ev: Event): void => {
+    void handleSelectedSeatSync(Array.from(seatsInStore).filter((sn) => slotStates[sn] === SlotStatus.OCCUPIED))
+
+    return
+  }
+
   useEffect(() => {
     const scaleOnload: { x: number; y: number } = { x: 0, y: 0 }
 
@@ -136,10 +178,12 @@ const Canvas: React.FC<CanvasProps> = ({ slotStates, slotMap, bizItemId, slotMap
       }
     })
     window.addEventListener('beforeunload', alertBeforeUnload)
+    window.addEventListener('unload', alertAfterUnload)
 
     return () => {
       backListener()
       window.removeEventListener('beforeunload', alertBeforeUnload)
+      window.removeEventListener('unload', alertAfterUnload)
     }
   }, [slotMap])
 
